@@ -24,12 +24,29 @@
   function hydrateIcons(root = document) { $$('[data-icon]', root).forEach(el => { el.innerHTML = icon(el.dataset.icon); }); }
   let state, storageOK = true;
   try { state = F.loadState(localStorage.getItem(KEY)); } catch { state = F.blankState(); storageOK = false; }
-  let view = 'practice', session = null, study = null, mapNote = '', mapSelected = null, toastTimer;
+  let { session, study } = F.restoreActivity(state.activity);
+  if (state.activity) { state.mode = state.activity.mode; state.lesson = state.activity.lesson; }
+  let view = 'practice', mapNote = '', mapSelected = null, toastTimer;
   const player = window.FretAudio.createPlayer(window, F.solfege, toast);
   const content = $('#exercise-content');
   function save() {
-    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { storageOK = false; }
+    state.activity = F.snapshotActivity(session, study, state.mode, state.lesson);
+    const previousTime = state.savedAt;
+    state.savedAt = Date.now();
+    try { localStorage.setItem(KEY, JSON.stringify(state)); storageOK = true; }
+    catch { storageOK = false; state.savedAt = previousTime; }
     $('#storage-warning').classList.toggle('hidden', storageOK);
+    const status = $('#save-status');
+    status.textContent = storageOK ? '✓ 已自动保存到此浏览器' : '暂未保存，请导出备份';
+    status.title = storageOK ? `上次保存：${new Date(state.savedAt).toLocaleString()}。关闭后可继续学习；其他设备需恢复备份。` : '浏览器未允许保存，建议在「我的进度」导出备份。';
+    status.classList.toggle('save-failed', !storageOK);
+  }
+  function confirmNewActivity() {
+    return (!session && !study) || confirm('开始新一轮会替换尚未完成的练习，已完成的答题记录仍会保留。确定开始吗？');
+  }
+  function resumeActivity() {
+    switchView('practice');
+    if (session) renderQuestion(); else if (study) renderStudy(); else renderIntro();
   }
   function toast(message) {
     clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.remove('hidden');
@@ -116,26 +133,29 @@
     $$('.mode-tab').forEach(b => { b.classList.toggle('active', b.dataset.mode === state.mode); b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)); });
   }
   function renderIntro() {
-    session = null; study = null; modeUI();
+    player.stop(); modeUI();
     $('#exercise-heading').textContent = '今日练习';
     $('#session-step').textContent = '约 3–5 分钟 / 每轮 10 题';
     const unique = [...new Set(lesson().cards.map(c => c.note))].slice(0, 7);
-    content.innerHTML = `<div class="intro-prompt"><div class="mini-label">SMALL STEPS. REAL PROGRESS.</div><h2 class="intro-title">今天，和几个音熟悉一下。</h2><p class="intro-description">${state.mode === 'find' ? '看到音名，在指定的弦上找到它的位置。' : '看到指板上的位置，试着说出它的音名。'}<br>一次记一点，每次都更确定一点。</p><div class="preview-notes">${unique.map(n => `<span>${n}</span>`).join('')}</div><div class="start-row"><button id="start-button" class="primary-button">开始今日练习<span class="arrow">→</span></button><small>新手可以先点右侧「先认一遍」</small></div></div><div class="intro-board">${board({ preview: true })}</div><div class="exercise-bottom"><span class="subtle-hint">${icon('bulb')}小提示：不用背整块指板，从路标开始。</span><span class="keyboard-tip">一次最多 5 个新位置</span></div>`;
-    $('#start-button').addEventListener('click', () => startSession(false));
+    const resume = session || study;
+    const resumeText = session ? `上次练到第 ${session.index + 1} / ${session.queue.length} 题${session.answered ? '，答案已记录' : ''}` : study ? `上次看到第 ${study.index + 1} / ${study.cards.length} 张认识卡` : '';
+    content.innerHTML = `${resume ? `<div class="resume-banner"><div><strong>欢迎回来，接着上次学。</strong><p>${resumeText} · ${lesson().title}</p></div><button id="resume-button" class="primary-button">继续学习 →</button></div>` : ''}<div class="intro-prompt"><div class="mini-label">SMALL STEPS. REAL PROGRESS.</div><h2 class="intro-title">今天，和几个音熟悉一下。</h2><p class="intro-description">${state.mode === 'find' ? '看到音名，在指定的弦上找到它的位置。' : '看到指板上的位置，试着说出它的音名。'}<br>一次记一点，每次都更确定一点。</p><div class="preview-notes">${unique.map(n => `<span>${n}</span>`).join('')}</div><div class="start-row"><button id="start-button" class="primary-button">${resume ? '开始新一轮' : '开始今日练习'}<span class="arrow">→</span></button><small>新手可以先点右侧「先认一遍」</small></div></div><div class="intro-board">${board({ preview: true })}</div><div class="exercise-bottom"><span class="subtle-hint">${icon('bulb')}小提示：不用背整块指板，从路标开始。</span><span class="keyboard-tip">一次最多 5 个新位置</span></div>`;
+    $('#resume-button')?.addEventListener('click', resumeActivity);
+    $('#start-button').addEventListener('click', () => { if (confirmNewActivity()) startSession(false); });
   }
   function startSession(reviewOnly = false, focusCards = null) {
-    study = null;
     const queue = F.makeQueue(state, state.lesson, Date.now(), Math.random, reviewOnly, focusCards);
     if (!queue.length) { toast('暂时没有到期的位置，可以先做今日练习。'); return; }
+    study = null;
     session = { queue, index: 0, correct: 0, answered: false, wrongIds: new Set(), retried: new Set(), originalLength: queue.length, started: Date.now(), reviewOnly };
-    switchView('practice', false); renderQuestion();
+    save(); switchView('practice', false); renderQuestion();
   }
   function renderQuestion() {
     player.stop();
     if (!session) return renderIntro();
     const c = session.queue[session.index];
     if (!c) return renderResult();
-    session.answered = false; session.wrongClick = null; modeUI();
+    modeUI();
     $('#exercise-heading').textContent = session.reviewOnly ? '到期复习' : '回忆练习';
     $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
     const [lo, hi] = range(c);
@@ -148,6 +168,7 @@
     }));
     $('#hint-button').addEventListener('click', showHint);
     $('#next-button').addEventListener('click', nextQuestion);
+    if (session.answered) paintAnswer(session.answer);
     if (nameMode || lo === 6) scrollBoard(c);
   }
   function scrollBoard(c) {
@@ -164,7 +185,7 @@
     if (!session || session.answered) return;
     session.answered = true;
     const c = session.queue[session.index];
-    F.grade(state, c.id, correct); save(); updateStats();
+    F.grade(state, c.id, correct);
     if (correct) session.correct++;
     else {
       session.wrongIds.add(c.id);
@@ -173,6 +194,11 @@
         session.queue.splice(Math.min(session.index + 3, session.queue.length), 0, c);
       }
     }
+    session.answer = { correct, wrongId, chosenNote };
+    save(); updateStats(); paintAnswer(session.answer); play(c);
+  }
+  function paintAnswer({ correct, wrongId, chosenNote }) {
+    const c = session.queue[session.index];
     $('#question-board').innerHTML = board({ target: c, reveal: true, wrong: correct ? null : wrongId });
     $$('.answer-option', content).forEach(b => {
       b.disabled = true;
@@ -185,22 +211,21 @@
     $('#next-button').classList.remove('hidden');
     $('#next-button').innerHTML = `${session.index === session.queue.length - 1 ? '看看成果' : '下一题'}<span class="arrow">→</span>`;
     $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
-    scrollBoard(c); play(c);
+    scrollBoard(c);
   }
   function nextQuestion() {
     if (!session || !session.answered) return;
-    session.index++;
-    if (session.index >= session.queue.length) renderResult(); else renderQuestion();
+    session.index++; session.answered = false; session.answer = null;
+    if (session.index >= session.queue.length) renderResult(); else { save(); renderQuestion(); }
   }
   function renderResult() {
     if (!session) return;
     const result = session;
-    state.sessions++; save(); updateStats();
+    session = null; state.sessions++; save(); updateStats();
     $('#exercise-heading').textContent = '练习完成'; $('#session-step').textContent = '每一次回忆，都在积累';
     const acc = Math.round(result.correct / result.queue.length * 100);
     const seconds = Math.max(1, Math.round((Date.now() - result.started) / 1000));
     content.innerHTML = `<div class="result-area"><div class="result-icon">✦</div><div class="eyebrow" style="justify-content:center">A LITTLE BETTER THAN BEFORE</div><h2>今天，又熟悉了一点。</h2><p>${acc >= 80 ? '做得不错。让时间帮你把这些位置记得更牢。' : '不用急，容易混的音，值得多见几次。'}<br>下次到期时，它们会出现在复习里。</p><div class="result-stats"><div><strong>${result.queue.length}</strong><span>完成题数</span></div><div><strong>${acc}%</strong><span>本轮正确率</span></div><div><strong>${seconds >= 60 ? `${Math.floor(seconds / 60)}分${seconds % 60}秒` : `${seconds}秒`}</strong><span>练习用时</span></div></div><div class="result-actions"><button id="again-button" class="primary-button">再练一轮<span class="arrow">→</span></button><button id="result-map-button" class="secondary-button">看看指板地图</button></div>${result.wrongIds.size ? `<div class="mistake-summary">这些位置还可以多见几次：<br>${[...result.wrongIds].map(id => { const c = F.ALL.find(x => x.id === id); return `${pos(c)} ${c.note}`; }).join('　/　')}</div>` : '<div class="mistake-summary">本轮全对！过一阵子再回忆，比现在一直重复更有助于检查记忆。</div>'}</div><div class="exercise-bottom"><span class="subtle-hint">${icon('repeat')}按时复习，才能提升长期记忆等级。</span><button id="back-intro" class="text-button">回到练习首页</button></div>`;
-    session = null;
     $('#again-button').addEventListener('click', () => startSession(false));
     $('#result-map-button').addEventListener('click', () => switchView('map'));
     $('#back-intro').addEventListener('click', renderIntro);
@@ -210,11 +235,12 @@
     const cards = lesson().cards;
     const fresh = cards.filter(c => !state.cards[c.id]);
     study = { cards: (fresh.length ? fresh : cards).slice(0, 5), index: 0, revealed: false };
-    switchView('practice', false); renderStudy();
+    save(); switchView('practice', false); renderStudy();
   }
   function renderStudy() {
     player.stop();
     if (!study) return;
+    save();
     const c = study.cards[study.index];
     $('#exercise-heading').textContent = '先认识，再回忆'; $('#session-step').textContent = `${study.index + 1} / ${study.cards.length} 张认识卡`;
     content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}</div><p class="study-hint">${F.displayNote(c.note)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · ${c.octave} 组<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听音与唱名</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
@@ -279,8 +305,8 @@
     const days = [];
     for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push({ label: `${d.getMonth() + 1}/${d.getDate()}`, n: state.days[F.localDay(d)] || 0 }); }
     const max = Math.max(10, ...days.map(d => d.n));
-    root.innerHTML = `<div class="progress-summary"><div><span>累计练习</span><strong>${s.attempts}<small style="font-size:11px;color:#a2ac9b"> 次</small></strong></div><div><span>完成轮次</span><strong>${state.sessions}</strong></div><div><span>累计正确率</span><strong>${s.attempts ? `${s.accuracy}%` : '—'}</strong></div></div><section class="progress-card"><div class="progress-header"><div><h2>你的指板，正在亮起来。</h2><p>已认识 ${s.learned} / 78 个位置 · ${s.mastered} 个已通过至少三轮间隔复习</p></div><button id="progress-practice" class="secondary-button">继续练习 ↗</button></div><div style="overflow:auto"><div class="heatmap-grid">${heat}</div></div><div class="heatmap-legend">未练过<i></i><i></i><i></i><i></i>长期记忆</div>${!s.attempts ? '<div class="empty-progress">从第一个音开始，这张地图就会慢慢有颜色。</div>' : ''}</section><section class="progress-card"><div class="progress-header"><div><h2>最近 7 天</h2><p>每次回忆都算一次练习，包括错题加练。</p></div></div><div class="history-row">${days.map(d => `<div class="history-day"><strong>${d.n} 次</strong><div class="history-bar" style="height:${Math.max(3, d.n / max * 85)}px"></div><span>${d.label}</span></div>`).join('')}</div></section><section class="progress-card"><div class="progress-header"><div><h2>把进步好好留住</h2><p>导出备份，以后可在其他浏览器恢复。</p></div></div><div class="data-actions"><button id="export-button" class="secondary-button">导出学习记录 ↗</button><button id="import-button" class="secondary-button">恢复备份</button><input id="import-file" class="import-input" type="file" accept=".json,application/json" aria-label="选择学习记录备份"><button id="reset-button" class="text-button">清空本机记录</button></div></section>`;
-    $('#progress-practice').addEventListener('click', () => { switchView('practice'); if (!session && !study) renderIntro(); });
+    root.innerHTML = `<div class="progress-summary"><div><span>累计练习</span><strong>${s.attempts}<small style="font-size:11px;color:#a2ac9b"> 次</small></strong></div><div><span>完成轮次</span><strong>${state.sessions}</strong></div><div><span>累计正确率</span><strong>${s.attempts ? `${s.accuracy}%` : '—'}</strong></div></div><section class="progress-card"><div class="progress-header"><div><h2>你的指板，正在亮起来。</h2><p>已认识 ${s.learned} / 78 个位置 · ${s.mastered} 个已通过至少三轮间隔复习</p></div><button id="progress-practice" class="secondary-button">继续练习 ↗</button></div><div style="overflow:auto"><div class="heatmap-grid">${heat}</div></div><div class="heatmap-legend">未练过<i></i><i></i><i></i><i></i>长期记忆</div>${!s.attempts ? '<div class="empty-progress">从第一个音开始，这张地图就会慢慢有颜色。</div>' : ''}</section><section class="progress-card"><div class="progress-header"><div><h2>最近 7 天</h2><p>每次回忆都算一次练习，包括错题加练。</p></div></div><div class="history-row">${days.map(d => `<div class="history-day"><strong>${d.n} 次</strong><div class="history-bar" style="height:${Math.max(3, d.n / max * 85)}px"></div><span>${d.label}</span></div>`).join('')}</div></section><section class="progress-card"><div class="progress-header"><div><h2>把进步好好留住</h2><p>每次答题、翻卡都会自动保存到此浏览器。关闭网页后可继续；跨设备使用请导出并恢复备份。</p></div></div><div class="data-actions"><button id="export-button" class="secondary-button">导出学习记录 ↗</button><button id="import-button" class="secondary-button">恢复备份</button><input id="import-file" class="import-input" type="file" accept=".json,application/json" aria-label="选择学习记录备份"><button id="reset-button" class="text-button">清空本机记录</button></div></section>`;
+    $('#progress-practice').addEventListener('click', resumeActivity);
     $('#export-button').addEventListener('click', exportData);
     $('#import-button').addEventListener('click', () => $('#import-file').click());
     $('#import-file').addEventListener('change', importData);
@@ -290,6 +316,7 @@
     });
   }
   function exportData() {
+    save();
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob), a = document.createElement('a');
     a.href = url; a.download = `弦记-学习记录-${F.localDay()}.json`; document.body.append(a); a.click(); a.remove();
@@ -304,13 +331,17 @@
       const restored = F.loadState(raw);
       if (Object.keys(x.cards).length && !Object.keys(restored.cards).length) throw new Error('Invalid card data');
       if (!confirm('恢复备份将替换本机现有学习记录，确定继续吗？')) return;
-      state = restored; session = null; study = null; save(); updateStats(); renderIntro(); renderProgress(); toast('备份已恢复，接着练吧。');
+      state = restored; ({ session, study } = F.restoreActivity(state.activity));
+      if (state.activity) { state.mode = state.activity.mode; state.lesson = state.activity.lesson; }
+      save(); updateStats(); renderIntro(); renderProgress(); toast('备份已恢复，接着练吧。');
     } catch { toast('无法读取这个备份，请选择弦记导出的完整 JSON 文件。'); }
   }
   function showLessons() {
     $('#lesson-list').innerHTML = F.LESSONS.map((l, i) => `<button class="lesson-choice ${state.lesson === l.id ? 'selected' : ''}" data-lesson="${l.id}"><span>${String(i + 1).padStart(2, '0')}</span><span><strong>${l.title}</strong><small>${l.subtitle} · ${l.cards.length} 个位置</small></span><span class="lesson-tag">${l.tag}</span></button>`).join('');
     $$('.lesson-choice').forEach(b => b.addEventListener('click', () => {
-      state.lesson = b.dataset.lesson; save(); updateStats(); renderIntro(); $('#lesson-dialog').close(); toast(`已切换到「${lesson().title}」`);
+      if (state.lesson === b.dataset.lesson) { $('#lesson-dialog').close(); return; }
+      if (!confirmNewActivity()) return;
+      session = null; study = null; state.lesson = b.dataset.lesson; save(); updateStats(); renderIntro(); $('#lesson-dialog').close(); toast(`已切换到「${lesson().title}」`);
     }));
     $('#lesson-dialog').showModal();
   }
@@ -318,12 +349,12 @@
   $('.brand').addEventListener('click', e => { e.preventDefault(); switchView('practice'); });
   $$('.mode-tab').forEach(b => b.addEventListener('click', () => {
     if (state.mode === b.dataset.mode) return;
-    state.mode = b.dataset.mode; save();
-    if (session) startSession(false); else if (study) { modeUI(); renderStudy(); } else renderIntro();
+    if (!confirmNewActivity()) return;
+    session = null; study = null; state.mode = b.dataset.mode; save(); renderIntro();
   }));
   $('#lesson-button').addEventListener('click', showLessons);
-  $('#study-button').addEventListener('click', startStudy);
-  $('#review-button').addEventListener('click', () => startSession(true));
+  $('#study-button').addEventListener('click', () => { if (confirmNewActivity()) startStudy(); });
+  $('#review-button').addEventListener('click', () => { if (confirmNewActivity()) startSession(true); });
   $('#help-button').addEventListener('click', () => $('#help-dialog').showModal());
   $('#sound-button').addEventListener('click', () => { state.sound = !state.sound; save(); updateStats(); if (!state.sound) player.stop();
     else if (view === 'practice' && ((session && !session.answered) || (study && !study.revealed))) toast('声音已开启，将在翻卡或作答后播放。');
@@ -353,8 +384,9 @@
       if (next) { e.preventDefault(); next.focus(); }
     }
   });
+  window.addEventListener('pagehide', () => { save(); player.stop(); });
   window.addEventListener('hashchange', () => switchView(location.hash.slice(1), false));
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) { updateStats(); if (view === 'progress') renderProgress(); } });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) { save(); player.stop(); } else { updateStats(); if (view === 'progress') renderProgress(); } });
   setInterval(updateStats, 30000);
   hydrateIcons(); save(); updateStats(); renderIntro(); switchView(location.hash.slice(1) || 'practice', false);
 })();

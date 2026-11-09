@@ -41,7 +41,7 @@
     const d = new Date(time);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
-  function blankState() { return { version: 1, cards: {}, days: {}, lesson: 'six', mode: 'find', sound: true, solfege: true, sessions: 0 }; }
+  function blankState() { return { version: 1, cards: {}, days: {}, lesson: 'six', mode: 'find', sound: true, solfege: true, sessions: 0, activity: null, savedAt: 0 }; }
   function loadState(raw) {
     try {
       const x = JSON.parse(raw);
@@ -62,8 +62,46 @@
       state.sound = typeof x.sound === 'boolean' ? x.sound : true;
       state.solfege = x.solfege !== false;
       state.sessions = Number.isInteger(x.sessions) && x.sessions >= 0 ? x.sessions : 0;
+      state.activity = normalizeActivity(x.activity);
+      state.savedAt = Number.isFinite(x.savedAt) && x.savedAt > 0 ? x.savedAt : 0;
       return state;
     } catch { return blankState(); }
+  }
+  // Backups contain card IDs only. Rebuild trusted cards and Sets when resuming.
+  function normalizeActivity(x) {
+    if (!x || !['session', 'study'].includes(x.type) || !LESSONS.some(l => l.id === x.lesson) || !['find', 'name'].includes(x.mode)) return null;
+    const ids = new Set(ALL.map(c => c.id));
+    const list = x.type === 'session' ? x.queue : x.cards;
+    const max = x.type === 'session' ? 20 : 5;
+    if (!Array.isArray(list) || !list.length || list.length > max || !list.every(id => ids.has(id))) return null;
+    if (!Number.isInteger(x.index) || x.index < 0 || x.index >= list.length) return null;
+    const base = { type: x.type, lesson: x.lesson, mode: x.mode, index: x.index };
+    if (x.type === 'study') return { ...base, cards: [...list], revealed: x.revealed === true };
+    if (!Number.isInteger(x.originalLength) || x.originalLength < 1 || x.originalLength > 10 || x.originalLength > list.length || list.length > x.originalLength * 2) return null;
+    if (!Number.isInteger(x.correct) || x.correct < 0 || x.correct > x.index + (x.answered === true ? 1 : 0)) return null;
+    if (!Number.isFinite(x.started) || x.started <= 0) return null;
+    if (!Array.isArray(x.wrongIds) || !Array.isArray(x.retried) || ![...x.wrongIds, ...x.retried].every(id => list.includes(id))) return null;
+    const answered = x.answered === true;
+    const a = x.answer;
+    if (answered && (!a || typeof a.correct !== 'boolean' || (a.wrongId !== null && !ids.has(a.wrongId)) || (a.chosenNote !== null && !NOTES.includes(a.chosenNote)))) return null;
+    return { ...base, queue: [...list], originalLength: x.originalLength, correct: x.correct,
+      answered, answer: answered ? { correct: a.correct, wrongId: a.wrongId, chosenNote: a.chosenNote } : null,
+      wrongIds: [...new Set(x.wrongIds)], retried: [...new Set(x.retried)], started: x.started, reviewOnly: x.reviewOnly === true };
+  }
+  function snapshotActivity(session, study, mode, lesson) {
+    if (session) return normalizeActivity({ ...session, type: 'session', mode, lesson,
+      queue: session.queue.map(c => c.id), wrongIds: [...session.wrongIds], retried: [...session.retried] });
+    if (study) return normalizeActivity({ ...study, type: 'study', mode, lesson, cards: study.cards.map(c => c.id) });
+    return null;
+  }
+  function restoreActivity(raw) {
+    const x = normalizeActivity(raw);
+    if (!x) return { session: null, study: null };
+    const byId = id => ALL.find(c => c.id === id);
+    if (x.type === 'study') return { session: null, study: { cards: x.cards.map(byId), index: x.index, revealed: x.revealed } };
+    return { study: null, session: { queue: x.queue.map(byId), index: x.index, correct: x.correct,
+      answered: x.answered, answer: x.answer, originalLength: x.originalLength, started: x.started,
+      reviewOnly: x.reviewOnly, wrongIds: new Set(x.wrongIds), retried: new Set(x.retried) } };
   }
   function grade(state, id, correct, now = Date.now()) {
     if (!ALL.some(c => c.id === id)) throw new Error('Unknown card');
@@ -121,7 +159,7 @@
       today: state.days[localDay(now)] || 0, streak: streak(state, now) };
   }
   function displayNote(note) { return FLATS[note] ? `${note} / ${FLATS[note]}` : note; }
-  return { solfege, NOTES, OPEN, ALL, LESSONS, INTERVALS, NATURAL, card, localDay, blankState, loadState, grade, shuffle, makeQueue, streak, stats, displayNote };
+  return { solfege, NOTES, OPEN, ALL, LESSONS, INTERVALS, NATURAL, card, localDay, blankState, loadState, normalizeActivity, snapshotActivity, restoreActivity, grade, shuffle, makeQueue, streak, stats, displayNote };
 });
 
 
