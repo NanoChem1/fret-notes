@@ -1,0 +1,25 @@
+Guitar recording attribution
+
+Title: Guitar Single-Note Recordings
+Creator / dataset publisher: collegefishiesd; Player 2, acoustic recording source eqm.
+Source: https://huggingface.co/datasets/collegefishiesd/guitar-fretboard-notes
+Pinned revision: a33a26243e88e7ccd4893bee30eac3219ec8bef8
+Original data file: data/train-00000-of-00001.parquet
+Original data SHA-256: 86ac522303251f2a5d77376261c23bf1af09b3c69183ad365b105cd230354add
+
+License: Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0; SPDX: CC-BY-SA-4.0)
+License notice and terms: https://creativecommons.org/licenses/by-sa/4.0/
+Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+
+All 78 included WAV recordings, and their embedded copies in the downloadable HTML,
+are shared under CC BY-SA 4.0. Retain this attribution and license notice when sharing
+or adapting the recordings. No endorsement by the original creator is implied.
+
+Changes by Fret Notes: trimmed leading silence; retained up to 2 seconds of the recorded
+pluck; resampled 44100 Hz to 22050 Hz; converted to mono PCM16; normalized peak level;
+applied short fades at the boundaries. No synthesized tones or pitch shifting used.
+Each string/fret position retains its own independently recorded source take.
+The original guitar's small tuning deviations are retained.
+
+manifest.json identifies each source take, expected MIDI note, measured tuning,
+duration, and the SHA-256 of each redistributed WAV file.

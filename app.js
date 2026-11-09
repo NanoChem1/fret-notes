@@ -27,7 +27,7 @@
   let { session, study } = F.restoreActivity(state.activity);
   if (state.activity) { state.mode = state.activity.mode; state.lesson = state.activity.lesson; }
   let view = 'practice', mapNote = '', mapSelected = null, toastTimer;
-  const player = window.FretAudio.createPlayer(window, F.solfege, toast);
+  const player = window.FretAudio.createPlayer(window, window.FretGuitarSamples, toast);
   const content = $('#exercise-content');
   function save() {
     state.activity = F.snapshotActivity(session, study, state.mode, state.lesson);
@@ -120,8 +120,6 @@
     $('#review-button').disabled = !s.due;
     $('#sound-button').setAttribute('aria-pressed', String(state.sound));
     $('#sound-button').setAttribute('aria-label', state.sound ? '关闭声音' : '开启声音');
-    $('#solfege-button').setAttribute('aria-pressed', String(state.solfege));
-    $('#solfege-button').textContent = `唱名：${state.solfege ? '开' : '关'}`;
     $('#sound-button').innerHTML = icon(state.sound ? 'sound' : 'mute');
     const mapSound = $('#map-sound-toggle');
     if (mapSound) {
@@ -243,7 +241,7 @@
     save();
     const c = study.cards[study.index];
     $('#exercise-heading').textContent = '先认识，再回忆'; $('#session-step').textContent = `${study.index + 1} / ${study.cards.length} 张认识卡`;
-    content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}</div><p class="study-hint">${F.displayNote(c.note)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · ${c.octave} 组<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听音与唱名</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
+    content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}</div><p class="study-hint">${F.displayNote(c.note)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · ${c.octave} 组<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听吉他音</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
     $('#study-exit').addEventListener('click', renderIntro);
     if (study.revealed) {
       $('#play-study').addEventListener('click', () => play(c, true));
@@ -275,7 +273,7 @@
   function renderMap() {
     const root = $('#map-view');
     const previousScroll = $('.board-wrap', root)?.scrollLeft || 0;
-    root.innerHTML = `<section class="map-card"><div class="map-header"><div><h2>标准调弦 · 0–12 品</h2><p>全部 78 个位置均可点击听音；上方是音名，下方是固定唱名。</p></div><div class="map-controls"><button id="map-sound-toggle" class="secondary-button" aria-pressed="${state.sound}">${state.sound ? '点击发声：开' : '点击发声：关'}</button><select id="note-filter" aria-label="筛选音名"><option value="">显示全部音</option>${F.NOTES.map(n => `<option value="${n}" ${mapNote === n ? 'selected' : ''}>${F.displayNote(n)}</option>`).join('')}</select></div></div>${board({ map: true, filter: mapNote })}<div class="map-detail" id="map-detail">${mapDetail()}</div></section><div class="map-info-grid"><div class="info-tile"><h3>01 / 一品，一个半音</h3><p>向琴身方向移动一品，升高半音。B–C、E–F 之间只差一品，其余相邻自然音之间差两品。</p></div><div class="info-tile"><h3>02 / 12 品，重新出发</h3><p>12 品的音名与空弦相同，高一个八度。后面的音名依次重复；1 弦与 6 弦同品也同名。</p></div><div class="info-tile"><h3>03 / 同音，不只一处</h3><p>同一个音名能出现在多个位置。先记弦和品，再找重复的音，慢慢连接整块指板。</p></div></div>`;
+    root.innerHTML = `<section class="map-card"><div class="map-header"><div><h2>标准调弦 · 0–12 品</h2><p>78 个位置各有独立吉他录音；上方是音名，下方是固定唱名文字。</p></div><div class="map-controls"><button id="map-sound-toggle" class="secondary-button" aria-pressed="${state.sound}">${state.sound ? '点击发声：开' : '点击发声：关'}</button><select id="note-filter" aria-label="筛选音名"><option value="">显示全部音</option>${F.NOTES.map(n => `<option value="${n}" ${mapNote === n ? 'selected' : ''}>${F.displayNote(n)}</option>`).join('')}</select></div></div>${board({ map: true, filter: mapNote })}<div class="map-detail" id="map-detail">${mapDetail()}</div></section><div class="map-info-grid"><div class="info-tile"><h3>01 / 一品，一个半音</h3><p>向琴身方向移动一品，升高半音。B–C、E–F 之间只差一品，其余相邻自然音之间差两品。</p></div><div class="info-tile"><h3>02 / 12 品，重新出发</h3><p>12 品的音名与空弦相同，高一个八度。后面的音名依次重复；1 弦与 6 弦同品也同名。</p></div><div class="info-tile"><h3>03 / 同音，不只一处</h3><p>同一个音名能出现在多个位置。先记弦和品，再找重复的音，慢慢连接整块指板。</p></div></div>`;
     $('.board-wrap', root).scrollLeft = previousScroll;
     $('#map-sound-toggle').addEventListener('click', () => $('#sound-button').click());
     $('#note-filter').addEventListener('change', e => { mapNote = e.target.value; renderMap(); });
@@ -287,9 +285,9 @@
     }));
   }
   function mapDetail() {
-    if (!mapSelected) return '<strong>♫</strong><p>每个格子都有对应的音，点击任意位置试听。<small>自然音对应 do、re、mi、fa、sol、la、si；升降音会标出变化。</small></p>';
+    if (!mapSelected) return '<strong>♫</strong><p>每个格子都有对应弦品的吉他录音，点击任意位置试听。<small>自然音对应 do、re、mi、fa、sol、la、si；升降音会标出变化。</small></p>';
     const c = mapSelected, p = state.cards[c.id];
-    return `<strong>${F.displayNote(c.note)}</strong><p>${pos(c)} · ${c.note}${c.octave} · <strong class="solfege-label">${F.solfege(c.note).label}</strong><small>${p ? `已答对 ${p.correct} 次 · ${p.box >= 3 ? '已进入长期记忆' : '正在积累记忆'}` : '还没练过这个位置，可以在对应单元中认识它。'} · 参考音约 ${Math.round(440 * 2 ** ((c.midi - 69) / 12))} Hz</small></p><button id="map-listen" class="sound-inline" aria-label="播放音高与唱名">${icon('sound')}试听</button>`;
+    return `<strong>${F.displayNote(c.note)}</strong><p>${pos(c)} · ${c.note}${c.octave} · <strong class="solfege-label">${F.solfege(c.note).label}</strong><small>${p ? `已答对 ${p.correct} 次 · ${p.box >= 3 ? '已进入长期记忆' : '正在积累记忆'}` : '还没练过这个位置，可以在对应单元中认识它。'} · 参考音约 ${Math.round(440 * 2 ** ((c.midi - 69) / 12))} Hz</small></p><button id="map-listen" class="sound-inline" aria-label="播放这个弦品位置的吉他录音">${icon('sound')}试听</button>`;
   }
   function renderProgress() {
     const s = F.stats(state), root = $('#progress-view');
@@ -359,17 +357,6 @@
   $('#sound-button').addEventListener('click', () => { state.sound = !state.sound; save(); updateStats(); if (!state.sound) player.stop();
     else if (view === 'practice' && ((session && !session.answered) || (study && !study.revealed))) toast('声音已开启，将在翻卡或作答后播放。');
     else play(study?.revealed ? study.cards[study.index] : session?.answered ? session.queue[session.index] : mapSelected || F.card(5, 3)); });
-  $('#solfege-button').addEventListener('click', () => {
-    state.solfege = !state.solfege;
-    if (state.solfege) state.sound = true;
-    else player.stop();
-    save(); updateStats();
-    if (state.solfege) {
-      const current = study?.revealed ? study.cards[study.index] : session?.answered ? session.queue[session.index] : !session && !study ? mapSelected || F.card(5, 3) : null;
-      if (current) play(current);
-      else toast('唱名已开启，将在翻卡或作答后播放。');
-    }
-  });
   $$('.close-dialog').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
   $$('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) { const r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close(); } }));
   document.addEventListener('click', e => { if (e.target.closest('#map-listen') && mapSelected) play(mapSelected, true); });

@@ -41,7 +41,7 @@
     const d = new Date(time);
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
   }
-  function blankState() { return { version: 1, cards: {}, days: {}, lesson: 'six', mode: 'find', sound: true, solfege: true, sessions: 0, activity: null, savedAt: 0 }; }
+  function blankState() { return { version: 1, cards: {}, days: {}, lesson: 'six', mode: 'find', sound: true, sessions: 0, activity: null, savedAt: 0 }; }
   function loadState(raw) {
     try {
       const x = JSON.parse(raw);
@@ -60,7 +60,6 @@
       state.lesson = LESSONS.some(l => l.id === x.lesson) ? x.lesson : 'six';
       state.mode = ['find', 'name'].includes(x.mode) ? x.mode : 'find';
       state.sound = typeof x.sound === 'boolean' ? x.sound : true;
-      state.solfege = x.solfege !== false;
       state.sessions = Number.isInteger(x.sessions) && x.sessions >= 0 ? x.sessions : 0;
       state.activity = normalizeActivity(x.activity);
       state.savedAt = Number.isFinite(x.savedAt) && x.savedAt > 0 ? x.savedAt : 0;

@@ -3,56 +3,50 @@
   else root.FretAudio = factory();
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
-  function frequency(midi) { return 440 * 2 ** ((midi - 69) / 12); }
-  function createPlayer(env, solfege, notify = () => {}) {
-    let audio, active = null;
-    const warned = new Set();
+  function createPlayer(env, samples, notify = () => {}) {
+    const clips = new Map(), warned = new Set();
+    let active = null, generation = 0;
     function warn(message) { if (!warned.has(message)) { warned.add(message); notify(message); } }
-    function cancelSpeech() { try { env.speechSynthesis?.cancel(); } catch {} }
     function stop() {
-      cancelSpeech();
-      if (active) { try { active.stop(); } catch {} active = null; }
-    }
-    function speak(note) {
-      const synth = env.speechSynthesis, Utterance = env.SpeechSynthesisUtterance;
-      if (!synth || !Utterance) { warn('此浏览器不支持唱名朗读，仍会播放参考音并显示唱名。'); return; }
-      try {
-        // Use installed voices only, keeping note names on this device.
-        const local = synth.getVoices().filter(v => v.localService === true);
-        const voice = local.find(v => /^zh(?:-|_)/i.test(v.lang)) || local.find(v => /^en(?:-|_)/i.test(v.lang));
-        if (!voice) { warn('暂未找到本地中英文语音，请稍后重试；参考音和唱名显示仍可使用。'); return; }
-        const info = solfege(note), chinese = /^zh(?:-|_)/i.test(voice.lang);
-        const utterance = new Utterance(chinese ? info.spoken : info.english);
-        utterance.voice = voice; utterance.lang = voice.lang; utterance.rate = .8; utterance.volume = .9;
-        // Speech labels the syllable. The oscillator supplies the musical pitch.
-        utterance.onerror = e => { if (!['canceled', 'interrupted'].includes(e.error)) warn('唱名朗读暂不可用，仍可听参考音和查看唱名。'); };
-        synth.cancel(); synth.speak(utterance);
-      } catch { warn('唱名朗读暂不可用，仍可听参考音和查看唱名。'); }
+      generation++;
+      const previous = active; active = null;
+      if (previous) {
+        previous.onerror = null; previous.onended = null;
+        try { previous.pause(); previous.currentTime = 0; } catch {}
+      }
     }
     async function play(card, settings, force = false) {
       if (!settings.sound && !force) return;
       stop();
+      const ticket = generation, sample = samples?.[card.id];
+      if (!sample || sample.string !== card.string || sample.fret !== card.fret || sample.midi !== card.midi) {
+        warn('这个位置的吉他录音暂不可用，请重新打开页面。'); return;
+      }
+      if (typeof env.Audio !== 'function') { warn('此浏览器不支持吉他录音播放，请换用支持音频的浏览器。'); return; }
+      let clip;
+      const failed = error => {
+        if (generation !== ticket || active !== clip) return;
+        stop(); clips.delete(card.id);
+        warn(error?.name === 'NotAllowedError' ? '浏览器暂未允许播放，请再次点击「试听」并检查声音权限。' : '吉他录音加载失败，请检查网络或网页文件是否完整，再点击重试。');
+      };
       try {
-        const AudioClass = env.AudioContext || env.webkitAudioContext;
-        if (AudioClass) {
-          audio ||= new AudioClass();
-          const oscillator = audio.createOscillator(), gain = audio.createGain();
-          // Bind to this gesture before awaiting a suspended context.
-          active = oscillator;
-          if (audio.state === 'suspended') await audio.resume();
-          if (active !== oscillator) return;
-          const now = audio.currentTime;
-          oscillator.type = 'triangle'; oscillator.frequency.value = frequency(card.midi);
-          gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(.12, now + .015);
-          gain.gain.exponentialRampToValueAtTime(.001, now + .8);
-          oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(now); oscillator.stop(now + .85);
-        } else warn('此浏览器不支持参考音，仍可查看唱名。');
-      } catch { warn('参考音暂不可用，仍可查看唱名。'); }
-      if (settings.solfege) speak(card.note);
+        clip = clips.get(card.id);
+        if (!clip) {
+          clip = new env.Audio(sample.src); clip.preload = 'auto'; clip.volume = .8;
+          clips.set(card.id, clip);
+        }
+        active = clip;
+        clip.currentTime = 0;
+        clip.onerror = () => failed();
+        clip.onended = () => { if (generation === ticket && active === clip) active = null; };
+        // Call play during the click gesture. Never transpose or synthesize a substitute tone.
+        await clip.play();
+      } catch (error) {
+        if (clip) failed(error);
+        else if (generation === ticket) warn('吉他录音暂不可用，请重新点击试听。');
+      }
     }
-    // Ask the browser to load the installed voice list before the first gesture.
-    try { env.speechSynthesis?.getVoices(); } catch {}
     return { play, stop };
   }
-  return { frequency, createPlayer };
+  return { createPlayer };
 });
