@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151c23">
+  <meta name="description" content="像记单词一样记住吉他指板。每天五分钟，练习找音、认音与间隔复习。">
+  <title>弦记 Fret Notes · 让每个音，都有位置</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ef895b'/%3E%3Cpath d='M24 45V20l23-5v25M24 25l23-5' stroke='%23151c23' stroke-width='5' fill='none'/%3E%3Cellipse cx='18' cy='46' rx='8' ry='6' fill='%23151c23'/%3E%3Cellipse cx='41' cy='41' rx='8' ry='6' fill='%23151c23'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="logic.js" defer></script>
+  <script src="audio.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#practice" aria-label="弦记首页"><span class="brand-mark">♮</span><span>弦记<small>FRET NOTES</small></span></a>
+      <div class="sidebar-label">你的练习室</div>
+      <nav aria-label="主导航">
+        <button class="nav-item active" data-view="practice"><span data-icon="practice"></span>今日练习<span class="nav-dot"></span></button>
+        <button class="nav-item" data-view="map"><span data-icon="map"></span>指板地图</button>
+        <button class="nav-item" data-view="progress"><span data-icon="chart"></span>我的进度</button>
+      </nav>
+      <div class="sidebar-guide"><span class="tiny-stars">✦</span><strong>记一点，就进步一点。</strong><p>不必一次背下整块指板。<br>今天，先认识几个新朋友。</p><div class="mini-strings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b></div></div>
+      <div class="sidebar-footer"><span class="status-dot"></span>本机保存 · 无需登录<button id="help-button" aria-label="使用说明">?</button></div>
+    </aside>
+    <main>
+      <header class="topbar"><div class="breadcrumb">我的练习室 <span>/</span> <strong id="page-label">今日练习</strong></div><div class="topbar-right"><span class="tuning"><span data-icon="guitar"></span>标准调弦 E A D G B E</span><button class="solfege-button" id="solfege-button" aria-pressed="true" title="固定唱名：C=do，D=re；开启本地语音朗读">唱名：开</button><button class="sound-button" id="sound-button" aria-label="开启音效" aria-pressed="false"><span data-icon="sound"></span></button></div></header>
+      <section class="greeting"><div><div class="eyebrow"><span></span> A LITTLE EVERY DAY</div><h1 id="page-title">让每个音，都有位置<span>。</span></h1><p id="page-subtitle">像记单词一样记指板。每天 5 分钟，从陌生到熟悉。</p></div><div class="streak-badge"><span data-icon="flame"></span><div><strong id="streak-count">0 <small>天</small></strong><span>连续练习</span></div></div></section>
+      <div id="storage-warning" class="notice hidden" role="status">浏览器未允许本地存储，本次仍可练习；关闭页面后进度可能丢失。</div>
+      <section id="practice-view" class="page-view">
+        <div class="daily-strip"><div class="daily-icon" data-icon="sun"></div><div class="daily-copy"><strong>今天的小目标</strong><span>完成 10 次回忆，让记忆更牢一点。</span></div><div class="daily-meter"><div class="meter-track"><i id="daily-fill"></i></div><span id="daily-count">0 / 10</span></div><span id="daily-status" class="pill muted-pill">慢慢来，也很快</span></div>
+        <div class="workspace-grid">
+          <section class="practice-card" aria-label="指板练习">
+            <div class="card-top"><div class="section-label"><span class="accent-line"></span><span id="exercise-heading">今日练习</span></div><span id="session-step" class="small-muted">准备好就开始</span></div>
+            <div class="mode-tabs" role="group" aria-label="练习方式"><button class="mode-tab active" data-mode="find"><span data-icon="target"></span>看音找位置</button><button class="mode-tab" data-mode="name"><span data-icon="note"></span>看位置认音</button></div>
+            <div id="exercise-content"></div>
+          </section>
+          <aside class="right-rail">
+            <section class="lesson-card"><div class="rail-label">当前学习单元<span>01 / 06</span></div><div class="lesson-art" aria-hidden="true"><div class="art-circle"></div><div class="art-neck"><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b></div><span>6</span></div><h2 id="lesson-title">第 6 弦 · 路标音</h2><p id="lesson-description">从最粗的一根弦开始</p><div class="lesson-meta"><span id="lesson-note-count">5 个位置</span><span id="lesson-learned">已认识 0 个</span></div><div class="meter-track"><i id="lesson-fill"></i></div><div class="lesson-actions"><button id="study-button" class="secondary-button">先认一遍<span>↗</span></button><button id="lesson-button" class="text-button">切换单元</button></div></section>
+            <section class="review-card"><span class="review-icon" data-icon="repeat"></span><div><h3>给记忆浇浇水</h3><p id="review-copy">到期的音，会在这里等你。</p></div><button id="review-button" class="review-link">开始复习<span>↗</span></button></section>
+            <div class="little-tip"><span data-icon="bulb"></span><p id="little-tip-text">一品就是一个半音。<br><strong>B–C、E–F</strong> 之间只差一品。</p></div>
+          </aside>
+        </div>
+        <section class="bottom-stats" aria-label="学习概况"><div><span class="stat-icon peach" data-icon="note"></span><p><span>已经认识</span><strong id="stat-learned">0 <small>/ 78 个位置</small></strong></p></div><div><span class="stat-icon mint" data-icon="check"></span><p><span>长期记忆</span><strong id="stat-mastered">0 <small>个位置</small></strong></p></div><div><span class="stat-icon lavender" data-icon="target"></span><p><span>累计正确率</span><strong id="stat-accuracy">—</strong></p></div></section>
+      </section>
+      <section id="map-view" class="page-view hidden"></section>
+      <section id="progress-view" class="page-view hidden"></section>
+      <footer class="main-footer"><span>慢慢记，慢慢弹，总会成为你的肌肉记忆。</span><span>MADE FOR YOUR FIRST NOTES <span class="footer-note">♫</span></span></footer>
+    </main>
+  </div>
+  <dialog id="lesson-dialog" aria-labelledby="lesson-dialog-title"><div class="dialog-head"><div><div class="eyebrow">YOUR LEARNING PATH</div><h2 id="lesson-dialog-title">一次，走一小步。</h2></div><button class="close-dialog icon-button" aria-label="关闭">×</button></div><p class="dialog-intro">每轮最多引入 5 个新位置。你可以自由选择练习单元。</p><div id="lesson-list"></div></dialog>
+  <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-head"><h2 id="help-title">欢迎来到弦记。</h2><button class="close-dialog icon-button" aria-label="关闭">×</button></div><div class="help-content"><p>这里把每个「弦＋品」位置当成一张单词卡。建议先点「先认一遍」，再开始回忆练习。</p><ol><li><strong>看音找位置：</strong>按题目指定的弦，在指板上点击对应音。相同音名出现在多个品时，任意正确位置都算对。</li><li><strong>看位置认音：</strong>辨认指板上标亮位置的音名。C♯ 与 D♭ 等同音异名视为同一个答案。</li><li><strong>间隔复习：</strong>按时答对后，复习间隔依次为 10 分钟、1 天、3 天、7 天、14 天。提前加练会记录成绩，但不会跳过间隔；答错会在本轮回访，并在 1 分钟后到期。</li></ol><p>「长期记忆」指至少完成三轮按间隔复习的位置，是练习指标，不代表永远不会忘记。0 品是空弦；最上方是最细的 1 弦，下方是最粗的 6 弦。</p><p>声音包含合成参考音和可开关的唱名朗读。这里使用固定唱名：C=do、D=re、E=mi、F=fa、G=sol、A=la、B=si；换调后也保持这套对应。朗读使用设备已安装的本地中英文语音，是念唱名，不是按音高演唱；没有本地语音时仍可听参考音和看唱名。顶部喇叭控制声音，「唱名」控制朗读。指板地图点击即试听；练习只在作答后播放，避免提前提示答案。数据保存在当前浏览器，无需账号。更换浏览器或清除网站数据后，需重新积累进度。可在「我的进度」导出备份。</p></div></dialog>
+  <div id="toast" class="toast hidden" role="status"></div>
+</body>
+</html>

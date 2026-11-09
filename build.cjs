@@ -1,0 +1,13 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const root = __dirname;
+const read = name => fs.readFileSync(path.join(root, name), 'utf8').replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n');
+let html = read('index.html');
+html = html.replace('  <link rel="stylesheet" href="styles.css">', () => `  <style>\n${read('styles.css')}\n  </style>`);
+html = html.replace('  <script src="logic.js" defer></script>\n  <script src="audio.js" defer></script>\n  <script src="app.js" defer></script>', '');
+html = html.replace('</body>', () => `  <script>\n${read('logic.js')}\n${read('audio.js')}\n${read('app.js')}\n  </script>\n</body>`);
+const output = path.join(root, 'dist', '弦记.html');
+fs.mkdirSync(path.dirname(output), { recursive: true });
+fs.writeFileSync(output, html, 'utf8');
+console.log(`Built: ${output}`);

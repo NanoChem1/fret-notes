@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151c23">
+  <meta name="description" content="像记单词一样记住吉他指板。每天五分钟，练习找音、认音与间隔复习。">
+  <title>弦记 Fret Notes · 让每个音，都有位置</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23ef895b'/%3E%3Cpath d='M24 45V20l23-5v25M24 25l23-5' stroke='%23151c23' stroke-width='5' fill='none'/%3E%3Cellipse cx='18' cy='46' rx='8' ry='6' fill='%23151c23'/%3E%3Cellipse cx='41' cy='41' rx='8' ry='6' fill='%23151c23'/%3E%3C/svg%3E">
+  <style>
+:root{--ink:#242b32;--muted:#8b9095;--paper:#f7f7f4;--line:#e8e9e4;--accent:#ee8c61;--accent-soft:#fff0e6;--green:#528b75;--nav:#182128;--font:Inter,"Segoe UI","Microsoft YaHei",sans-serif}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-size:14px;-webkit-font-smoothing:antialiased}button,a,input,select{font:inherit}button{cursor:pointer}button:disabled{cursor:default;opacity:.5}button,a{-webkit-tap-highlight-color:transparent}button{color:inherit}button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:4px}a{color:inherit;text-decoration:none}button svg,span svg,div>svg{width:20px;height:20px;display:block}button{border:0;background:none}button:not(:disabled){transition:background .15s,color .15s,transform .15s}.hidden{display:none!important}.app-shell{display:flex;min-height:100vh}.sidebar{width:216px;background:var(--nav);color:#fff;position:fixed;inset:0 auto 0 0;padding:38px 22px 22px;display:flex;flex-direction:column;z-index:10}.brand{display:flex;align-items:center;gap:12px;margin:0 11px 59px;font-size:26px;font-weight:700;letter-spacing:2px;line-height:1.3}.brand-mark{display:grid;place-items:center;background:var(--accent);color:#1d272d;border-radius:12px;width:43px;height:45px;font-family:Georgia,serif;font-size:38px;font-weight:400;transform:rotate(-5deg)}.brand small{display:block;color:#8c989f;letter-spacing:2px;font-size:9px;font-weight:500;margin-top:5px}.sidebar-label{font-size:10px;letter-spacing:2px;color:#718089;margin:0 15px 17px}nav{display:grid;gap:9px}.nav-item{display:flex;align-items:center;gap:13px;color:#99a5ac;width:100%;text-align:left;padding:14px 15px;border-radius:8px;font-size:13px}.nav-item svg{width:18px;height:18px}.nav-item:hover{background:#23303a;color:#fff}.nav-item.active{background:#303a40;color:#f4aa83}.nav-dot{margin-left:auto;width:5px;height:5px;background:var(--accent);border-radius:50%}.nav-item:not(.active) .nav-dot{display:none}.sidebar-guide{margin:auto 0 34px;background:#202b32;padding:22px 17px 0;border:1px solid #2c373e;border-radius:11px;overflow:hidden}.tiny-stars{display:block;color:#f1b18b;font-size:26px;margin-bottom:14px}.sidebar-guide strong{font-size:12px;font-weight:500}.sidebar-guide p{font-size:10px;color:#89969e;line-height:2;margin:10px 0 16px}.mini-strings{height:75px;position:relative;transform:rotate(-20deg);margin:0 -35px -5px}.mini-strings i{display:block;height:1px;background:#465057;position:absolute;left:0;right:0}.mini-strings i:nth-child(1){top:8px}.mini-strings i:nth-child(2){top:18px}.mini-strings i:nth-child(3){top:28px}.mini-strings i:nth-child(4){top:38px}.mini-strings i:nth-child(5){top:48px}.mini-strings i:nth-child(6){top:58px}.mini-strings b{position:absolute;top:0;height:80px;border-left:1px solid #3a464e;left:60px}.mini-strings b:nth-last-child(2){left:130px}.mini-strings b:last-child{left:200px}.sidebar-footer{display:flex;align-items:center;font-size:9px;color:#7f8e97;gap:6px;white-space:nowrap}.status-dot{width:5px;height:5px;background:#70a38b;border-radius:50%}.sidebar-footer button{margin-left:auto;border:1px solid #465159;border-radius:50%;height:18px;width:18px;font-size:10px;color:#9aa7af;padding:0}main{margin-left:216px;width:calc(100% - 216px);padding:0 38px;max-width:1720px}.topbar{height:85px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;font-size:11px}.breadcrumb{color:#90959a}.breadcrumb span{margin:0 12px;color:#c9cccd}.breadcrumb strong{font-weight:500;color:#5a6268}.topbar-right{display:flex;align-items:center;gap:20px}.tuning{display:flex;align-items:center;gap:8px;color:#81888c;font-size:10px;letter-spacing:.5px}.tuning svg{width:16px;height:16px}.sound-button{border:1px solid #e1e4df;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#7d8589}.sound-button svg{width:16px;height:16px}.sound-button[aria-pressed=true]{background:var(--accent-soft);color:#b96943;border-color:#f1ccb5}.greeting{display:flex;align-items:center;justify-content:space-between;padding:37px 0 29px}.eyebrow{font-size:9px;letter-spacing:2px;color:#9a9e9f;display:flex;gap:7px;align-items:center}.eyebrow>span{width:5px;height:5px;background:var(--accent);border-radius:50%}h1{font-size:30px;letter-spacing:1px;margin:12px 0 10px;font-weight:650;line-height:1.4}h1>span{color:var(--accent)}.greeting p{font-size:12px;color:#82888c;margin:0;line-height:1.8}.streak-badge{display:flex;align-items:center;gap:12px;padding:11px 21px;border:1px solid #e7e5dd;border-radius:10px;background:#fcfbf7}.streak-badge>span{color:#cf8b59}.streak-badge svg{width:24px;height:29px}.streak-badge strong{display:block;font-size:24px;line-height:1.2;font-weight:600}.streak-badge small{font-size:11px;font-weight:400;color:#8d8980}.streak-badge div>span{font-size:9px;color:#a09a8e;display:block;margin-top:5px}.daily-strip{display:flex;align-items:center;border:1px solid #e9e4da;border-radius:10px;padding:17px 21px;background:#f3f1e9;margin-bottom:25px;gap:14px}.daily-icon{color:#bc9c66;background:#eae6d7;width:38px;height:38px;display:grid;place-items:center;border-radius:50%}.daily-icon svg{width:20px;height:20px}.daily-copy{display:grid;gap:5px}.daily-copy strong{font-size:12px;font-weight:600}.daily-copy span{font-size:10px;color:#9a9588}.daily-meter{display:flex;align-items:center;gap:12px;margin-left:auto;min-width:190px}.meter-track{height:5px;background:#e9e9e1;border-radius:10px;overflow:hidden}.meter-track i{display:block;width:0;height:100%;background:var(--accent);border-radius:10px;transition:width .4s ease}.daily-meter .meter-track{width:150px;background:#e3dfd2;height:5px}.daily-meter span{font-size:10px;white-space:nowrap;color:#8c8579;font-variant-numeric:tabular-nums}.pill{font-size:9px;border-radius:5px;padding:7px 9px;white-space:nowrap}.muted-pill{background:#e9e6d9;color:#99907e}.workspace-grid{display:grid;grid-template-columns:minmax(0,1fr) 240px;gap:22px;align-items:start}.practice-card{background:#fff;border:1px solid var(--line);border-radius:13px;overflow:hidden;min-width:0}.card-top{display:flex;align-items:center;justify-content:space-between;padding:21px 23px 0}.section-label{font-size:12px;font-weight:600;display:flex;align-items:center;gap:8px}.accent-line{width:3px;height:12px;background:var(--accent);border-radius:2px}.small-muted{font-size:10px;color:#9da2a4}.mode-tabs{display:flex;justify-content:center;gap:4px;padding:4px;margin:24px auto 0;background:#f3f4f1;border-radius:8px;width:max-content;max-width:95%}.mode-tab{display:flex;gap:7px;align-items:center;padding:9px 15px;font-size:11px;color:#8f9698;border-radius:6px}.mode-tab svg{width:14px;height:14px}.mode-tab.active{background:#fff;color:#414d53;box-shadow:0 1px 5px #0000000a}.question-area{text-align:center;padding:24px 24px 14px}.question-kicker{font-size:11px;color:#92999b;letter-spacing:.6px;margin:0 0 12px}.note-display{font-size:64px;font-weight:600;line-height:1.1;letter-spacing:-2px;color:#303c43;position:relative;display:inline-block}.note-display small{font-size:21px;letter-spacing:-1px;color:#aaaeb0;vertical-align:middle;margin-left:9px}.note-title{font-size:27px;line-height:1.5;letter-spacing:1px;margin:6px 0}.question-prompt{font-size:11px;color:#888f93;line-height:1.8;margin:10px 0 0}.range-chip{display:inline-block;padding:3px 8px;background:var(--accent-soft);color:#ba7958;border-radius:4px;font-size:10px;margin-right:7px}.board-wrap{padding:0 20px 5px;overflow:auto;scrollbar-width:thin;scrollbar-color:#dfddd4 transparent}.fretboard{min-width:560px;position:relative;padding:0 0 20px}.fret-numbers{display:grid;grid-template-columns:34px repeat(13,minmax(0,1fr));padding-bottom:8px;font-size:9px;color:#b4b8b8;text-align:center;align-items:center;height:26px}.fret-numbers span.marked{color:#8c9698}.string-row{display:grid;grid-template-columns:34px repeat(13,minmax(0,1fr));height:34px;align-items:center;position:relative}.string-label{font-size:9px;color:#9aa2a4;display:flex;align-items:center;gap:3px;line-height:1}.string-label b{font-weight:500;color:#627077}.string-row:after{position:absolute;content:"";left:34px;right:0;top:50%;height:var(--weight,1px);background:#c6cbc7;pointer-events:none}.fret-cell{height:34px;position:relative;border-right:1px solid #dce0da;z-index:1;display:grid;place-items:center;padding:0;border-radius:0;min-width:0}.fret-cell[data-fret="0"]{background:#f5f5ef;border-right:3px solid #d0d5cc}.fret-cell:hover:not(:disabled){background:#f5e9dd66}.fret-cell .note-dot{display:grid;place-items:center;position:relative;z-index:1;border-radius:50%;width:25px;height:25px;font-size:10px;font-weight:500;background:transparent;color:transparent;transition:background .15s}.fret-cell.focus-dot .note-dot{background:var(--accent);color:#fff;box-shadow:0 0 0 5px #f5ba8c2b}.fret-cell.answer-dot .note-dot{background:#7aa58c;color:white;box-shadow:0 0 0 4px #7aa58c1a}.fret-cell.wrong-dot .note-dot{background:#d88075;color:white}.fret-cell.known-dot .note-dot{background:#edf2ee;color:#6e8c7c}.string-row.target-string .string-label b{color:#bf805c}.string-row.target-string:after{background:#bc9b78}.fret-cell.out-of-range{background:#f6f7f580}.fret-cell.map-cell .note-dot{background:#f9faf7;color:#68787b;font-size:9px}.fret-cell.map-cell.accidental .note-dot{background:#f1f2ef;color:#a4abad;font-size:8px}.fret-cell.map-cell.map-selected .note-dot{background:var(--accent);color:white}.fret-cell.map-cell.map-mastered .note-dot{background:#def0e4;color:#4f8369}.fret-markers{display:grid;grid-template-columns:34px repeat(13,minmax(0,1fr));position:absolute;bottom:1px;left:0;right:0;text-align:center;align-items:center;height:15px;color:#cbd1ca;font-size:13px;letter-spacing:2px}.board-legend{display:flex;align-items:center;justify-content:space-between;margin:2px 23px 0;font-size:9px;color:#a9aeb0}.board-legend span{display:flex;align-items:center;gap:5px}.legend-dot{width:5px;height:5px;border-radius:50%;background:#d2b69b}.answer-options{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:12px 24px 0}.answer-option{border:1px solid #e2e6e0;background:#fafbf8;padding:10px 4px;border-radius:6px;font-size:14px;min-height:41px}.answer-option small{font-size:9px;color:#999;display:block;margin-top:3px}.answer-option:hover{border-color:#dfa580;background:#fff5e9}.answer-option.answer-correct{background:#edf6ee;border-color:#a7c6ae;color:#527862}.answer-option.answer-wrong{background:#fff0ed;border-color:#dcafa6;color:#b76557}.exercise-bottom{margin:17px 22px 0;border-top:1px solid #f0f1ed;padding:15px 0;display:flex;align-items:center;justify-content:space-between;min-height:65px;gap:10px}.exercise-bottom .text-button{font-size:10px}.subtle-hint{font-size:10px;color:#a4aaac;display:flex;gap:6px;align-items:center}.subtle-hint svg{width:13px;height:13px}.primary-button{display:inline-flex;align-items:center;justify-content:center;gap:20px;padding:12px 22px;background:var(--accent);color:#452f21;border-radius:7px;font-size:12px;font-weight:600}.primary-button:hover:not(:disabled){background:#e47b4f;transform:translateY(-1px)}.primary-button .arrow{font-size:18px;line-height:1;font-weight:400}.text-button{font-size:11px;color:#929a9c;padding:6px 0}.text-button:hover{color:#b46f47}.secondary-button{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#f8f8f3;border:1px solid #e7e8e0;font-size:10px;border-radius:6px;gap:10px}.secondary-button:hover{background:#f1eee5}.feedback{font-size:11px;line-height:1.8;flex:1}.feedback strong{display:block;font-size:12px;font-weight:500}.feedback.good{color:#5e8c72}.feedback.bad{color:#b17661}.feedback.neutral{color:#8e9290}.right-rail{display:grid;gap:18px}.lesson-card{background:#fff;border:1px solid var(--line);border-radius:11px;padding:20px}.rail-label{display:flex;justify-content:space-between;font-size:10px;color:#929b9c}.rail-label>span{font-size:9px;color:#a2a9aa;letter-spacing:1px}.lesson-art{height:113px;position:relative;overflow:hidden;margin:10px -8px 8px}.art-circle{position:absolute;width:92px;height:92px;background:#f6e9d8;border-radius:50%;left:50%;top:8px;transform:translateX(-50%)}.art-neck{position:absolute;width:180px;height:64px;top:27px;left:50%;transform:translateX(-50%) rotate(-29deg);background:#e9d0ae;border-top:6px solid #e0bd92;border-bottom:6px solid #e0bd92;border-radius:2px;box-shadow:0 8px 13px #886d4510}.art-neck i{height:1px;left:0;right:0;position:absolute;background:#a98b65}.art-neck i:nth-child(1){top:8px}.art-neck i:nth-child(2){top:17px}.art-neck i:nth-child(3){top:26px}.art-neck i:nth-child(4){top:35px}.art-neck i:nth-child(5){top:44px}.art-neck b{position:absolute;height:100%;width:2px;background:#c1a27b;left:35px}.art-neck b:nth-last-child(2){left:88px}.art-neck b:last-child{left:141px}.lesson-art>span{position:absolute;left:52%;top:44px;width:27px;height:27px;background:#7b8675;border:3px solid #faf8eb;border-radius:50%;display:grid;place-items:center;font-size:10px;color:#fff;transform:rotate(-29deg)}h2{font-weight:600}.lesson-card h2{font-size:14px;margin:5px 0 8px}.lesson-card>p{font-size:10px;color:#9aa1a1;margin:0}.lesson-meta{display:flex;justify-content:space-between;font-size:9px;color:#9ba2a1;margin:22px 0 9px}.lesson-card .meter-track{height:4px}.lesson-actions{display:flex;align-items:center;justify-content:space-between;gap:7px;margin-top:15px}.lesson-actions .text-button{font-size:10px}.review-card{border:1px solid #dee6df;background:#eff3ed;border-radius:10px;padding:18px;display:flex;gap:10px;flex-wrap:wrap}.review-icon{color:#7c9380}.review-icon svg{width:18px;height:18px}.review-card h3{font-size:12px;font-weight:500;margin:0 0 7px}.review-card p{font-size:10px;margin:0;color:#92a193;line-height:1.6}.review-link{font-size:10px;color:#748f79;margin-left:28px;display:flex;justify-content:space-between;gap:55px;padding:3px 0}.little-tip{display:flex;gap:8px;padding:0 4px;color:#aaa897}.little-tip svg{width:14px;height:14px;margin-top:2px}.little-tip p{font-size:10px;line-height:1.9;margin:0}.little-tip strong{font-weight:500;color:#929381}.bottom-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));margin-top:23px;border:1px solid var(--line);border-radius:11px;background:#fff;padding:21px 0}.bottom-stats>div{display:flex;gap:13px;align-items:center;padding:0 26px}.bottom-stats>div+div{border-left:1px solid var(--line)}.stat-icon{height:37px;width:37px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}.stat-icon svg{width:17px;height:17px}.peach{background:#fcf0e6;color:#ce9a75}.mint{background:#eff4ee;color:#84a28a}.lavender{background:#f1eef8;color:#a199b5}.bottom-stats p{margin:0}.bottom-stats p>span{font-size:10px;color:#9ba2a4;display:block;margin-bottom:6px}.bottom-stats strong{font-size:21px;font-weight:600;line-height:1}.bottom-stats small{font-size:10px;font-weight:400;color:#a5abad;margin-left:3px}.main-footer{padding:25px 0 24px;display:flex;align-items:center;justify-content:space-between;font-size:9px;color:#b0b4b1;gap:10px}.main-footer>span:last-child{font-size:8px;letter-spacing:1px}.footer-note{font-size:16px;color:#cbac91;margin-left:8px}.intro-prompt{text-align:center;padding:24px 22px 0}.intro-prompt .preview-notes{display:flex;gap:8px;justify-content:center;margin:23px 0 20px}.preview-notes span{border:1px solid #e8e7df;background:#fbfaf6;width:40px;height:46px;display:grid;place-items:center;border-radius:8px;font-size:18px;color:#9c9d8e}.preview-notes span:first-child{color:#bd7a55;border-color:#f2ccac;background:#fff2e5}.intro-title{font-size:23px;font-weight:600;margin:17px 0 8px;letter-spacing:1px}.intro-description{font-size:11px;color:#9ca2a1;line-height:1.9;margin:0}.intro-prompt .start-row{margin:22px 0 25px}.intro-prompt .start-row small{display:block;color:#b0b4b1;font-size:9px;margin-top:12px}.intro-board{opacity:.8}.intro-board .fret-cell.known-dot .note-dot{background:#f7e8d6;color:#b28b64}.study-tag{font-size:9px;letter-spacing:1px;padding:5px 9px;background:#eff4ec;color:#8c9b7f;display:inline-block;border-radius:4px;margin-bottom:13px}.study-placeholder{font-size:30px;color:#a8b2aa;margin:8px 0}.study-note-hidden .note-dot{color:transparent!important}.study-hint{font-size:11px;color:#8e9690;line-height:1.9;margin:12px auto 0;max-width:370px}.session-progress{height:3px;background:#f1f1e9;margin:18px 23px 0;border-radius:3px;overflow:hidden}.session-progress i{display:block;height:100%;background:var(--accent);transition:width .2s}.result-area{text-align:center;padding:28px 24px 18px}.result-icon{margin:0 auto 16px;border-radius:50%;width:65px;height:65px;display:grid;place-items:center;background:#f7eddb;color:#cfa56e;font-size:32px}.result-area h2{font-size:24px;margin:8px 0}.result-area>p{font-size:11px;color:#949d98;line-height:1.9}.result-stats{display:flex;justify-content:center;gap:45px;padding:20px 0;margin:10px 0 18px}.result-stats strong{font-size:27px;display:block}.result-stats span{display:block;font-size:10px;color:#9aa49d;margin-top:7px}.result-actions{display:flex;justify-content:center;gap:12px;align-items:center}.mistake-summary{margin:22px auto 8px;padding:13px 16px;background:#f8f5ed;border-radius:7px;font-size:10px;color:#9d927d;line-height:1.9;max-width:440px}dialog{width:min(560px,calc(100vw - 32px));border:1px solid #e2e5dc;border-radius:16px;padding:27px;color:var(--ink);background:#fbfcf8;box-shadow:0 20px 90px #0c191933;max-height:85vh;overflow:auto}dialog::backdrop{background:#14202580;backdrop-filter:blur(4px)}.dialog-head{display:flex;align-items:center;justify-content:space-between;gap:14px}.dialog-head h2{font-size:23px;margin:8px 0}.dialog-head .eyebrow{font-size:8px}.icon-button{width:30px;height:30px;background:#edf0e9;border-radius:50%;font-size:22px;display:grid;place-items:center;flex-shrink:0}.dialog-intro{font-size:11px;color:#939d97;line-height:1.8;margin:12px 0 20px}#lesson-list{display:grid;gap:8px}.lesson-choice{display:flex;align-items:center;text-align:left;gap:13px;border:1px solid #e6e9df;border-radius:8px;padding:14px;background:#fff;width:100%}.lesson-choice:hover,.lesson-choice.selected{border-color:#e5ad84;background:#fff7ec}.lesson-choice>span:first-child{color:#a6afa2;font-size:13px}.lesson-choice strong{font-size:12px;font-weight:500;display:block}.lesson-choice small{font-size:9px;color:#9da79b;display:block;margin-top:5px}.lesson-choice .lesson-tag{margin-left:auto;background:#f1f2e9;color:#a0a48f;border-radius:4px;padding:4px 7px;font-size:9px}.help-content{font-size:12px;color:#7d8981;line-height:2}.help-content ol{padding-left:21px}.help-content li{margin:10px 0}.help-content strong{font-weight:500;color:#46564d}.toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);padding:13px 22px;border:1px solid #34453d;background:#25392f;color:#f7fcf6;border-radius:9px;box-shadow:0 5px 30px #0002;font-size:12px;z-index:100;max-width:90vw;line-height:1.7}.notice{background:#fff0d9;padding:12px 17px;font-size:11px;color:#977a47;border-radius:8px;margin:0 0 16px}.map-card,.progress-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:24px;margin-bottom:20px}.map-header,.progress-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:24px}.map-header h2,.progress-header h2{font-size:16px;margin:0 0 6px}.map-header p,.progress-header p{font-size:11px;color:#95a096;margin:0}.map-header select{border:1px solid #e2e7dd;border-radius:6px;padding:8px 12px;background:#fafbf7;color:#798575;font-size:11px}.map-card .string-row,.map-card .fret-cell{height:47px}.map-card .board-wrap{padding:0 0 6px}.map-card .fretboard{min-width:650px}.map-detail{display:flex;align-items:center;gap:20px;background:#f8f7ef;border:1px solid #efebde;border-radius:8px;padding:18px 22px;margin-top:20px;min-height:83px}.map-detail strong{font-size:30px;font-weight:500;color:#b17c57}.map-detail p{margin:0;font-size:12px;line-height:1.9;color:#839184}.map-detail small{display:block;font-size:10px;color:#a5ac9f}.map-info-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.info-tile{border:1px solid var(--line);background:#fff;border-radius:10px;padding:21px}.info-tile h3{font-size:13px;margin:0 0 11px}.info-tile p{font-size:11px;line-height:1.9;color:#929c95;margin:0}.heatmap-grid{display:grid;grid-template-columns:34px repeat(13,minmax(0,1fr));gap:5px;min-width:570px}.heatmap-cell{aspect-ratio:1.3;min-height:25px;display:grid;place-items:center;background:#f2f3ee;border-radius:5px;font-size:10px;color:#aeb7a8}.heatmap-cell.level1{background:#f6e9d9;color:#c3a47c}.heatmap-cell.level2{background:#e6ecd9;color:#94a574}.heatmap-cell.level3{background:#b8d2ad;color:#5e8150}.heatmap-label{font-size:10px;color:#96a28e;display:grid;place-items:center}.heatmap-legend{display:flex;justify-content:flex-end;align-items:center;gap:7px;font-size:9px;color:#9da695;margin-top:16px}.heatmap-legend i{width:10px;height:10px;border-radius:2px;background:#f2f3ee}.heatmap-legend i:nth-of-type(2){background:#f6e9d9}.heatmap-legend i:nth-of-type(3){background:#e6ecd9}.heatmap-legend i:nth-of-type(4){background:#b8d2ad}.history-row{display:flex;gap:10px;align-items:end;min-height:110px;padding-top:10px}.history-day{flex:1;text-align:center}.history-bar{background:#f0b68c;border-radius:5px 5px 0 0;width:65%;max-width:65px;margin:0 auto 10px;min-height:3px}.history-day span{font-size:9px;color:#9ea897}.history-day strong{font-size:10px;font-weight:400;color:#b39d83;display:block;margin-bottom:7px}.data-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.data-actions .text-button{margin-left:auto;color:#b0927f}.empty-progress{text-align:center;padding:18px 20px 9px;font-size:12px;line-height:1.9;color:#9aa493}.mini-label{font-size:9px;color:#b3b7ae;letter-spacing:1px;margin-bottom:10px}.keyboard-tip{font-size:9px;color:#b5b9b2}.import-input{display:none}.progress-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:22px}.progress-summary>div{border:1px solid var(--line);border-radius:10px;padding:22px;background:#fff}.progress-summary span{font-size:11px;color:#99a392}.progress-summary strong{font-size:30px;font-weight:500;display:block;margin-top:12px}.sound-inline{display:inline-flex;gap:6px;align-items:center;font-size:10px;color:#9aab9c}.sound-inline svg{width:13px;height:13px}.hint-box{background:#fbf5e9;padding:11px 14px;margin:14px 23px 0;border-radius:6px;font-size:11px;color:#9b8d72;line-height:1.8}.reveal-label{font-size:9px;color:#a7afa2;letter-spacing:1px;display:block;margin-top:10px}@media(min-width:1600px){main{padding:0 55px}.workspace-grid{grid-template-columns:minmax(0,1fr) 280px;gap:26px}.question-area{padding-top:30px}.string-row,.fret-cell{height:40px}.lesson-art{height:130px}.lesson-card{padding:24px}.note-display{font-size:76px}.exercise-bottom{margin-top:24px}}@media(max-width:1180px){.sidebar{width:185px;padding:30px 16px 18px}.brand{margin-left:9px;font-size:23px;gap:9px}.brand-mark{width:37px;height:40px}.sidebar-guide{padding:18px 12px 0}.sidebar-footer{font-size:8px;gap:4px}main{margin-left:185px;width:calc(100% - 185px);padding:0 25px}.workspace-grid{grid-template-columns:minmax(0,1fr) 210px;gap:16px}.lesson-card{padding:17px}.daily-meter{min-width:150px}.daily-meter .meter-track{width:100px}.daily-strip>.pill{display:none}.bottom-stats>div{padding:0 18px;gap:10px}.bottom-stats small{font-size:9px}.main-footer>span:last-child{display:none}.board-wrap{padding-left:15px;padding-right:15px}.fretboard{min-width:480px}.fret-cell .note-dot{width:23px;height:23px}.mode-tab{padding:9px 12px}.tuning{font-size:9px}}@media(max-width:960px){.sidebar{width:158px;padding:28px 12px 16px}.brand{font-size:21px;gap:8px;margin-left:4px;margin-bottom:43px}.brand small{font-size:7px}.brand-mark{width:33px;height:36px;font-size:31px}.nav-item{padding:12px 10px;gap:9px;font-size:12px}.sidebar-label{font-size:9px;margin-left:10px}.sidebar-guide{margin-bottom:24px}.sidebar-guide strong{font-size:10px}.sidebar-guide p{font-size:9px}.sidebar-footer{font-size:7px}.sidebar-footer button{width:15px;height:15px}.sidebar-footer .status-dot{display:none}main{margin-left:158px;width:calc(100% - 158px);padding:0 23px}.workspace-grid{grid-template-columns:minmax(0,1fr)}.right-rail{grid-template-columns:1.2fr 1fr;align-items:start;gap:16px}.lesson-art{display:none}.lesson-card h2{margin-top:17px}.lesson-meta{margin-top:17px}.little-tip{grid-column:2;margin-top:-68px}.review-card{padding:19px}.review-link{gap:25px}.greeting h1{font-size:27px}.bottom-stats>div{padding:0 15px;gap:9px}.bottom-stats small{display:block;margin-top:6px;margin-left:0;font-size:8px}.bottom-stats strong{font-size:20px}.bottom-stats{padding:18px 0}.stat-icon{width:30px;height:34px}.map-info-grid{gap:12px}.info-tile{padding:17px}}@media(max-width:640px){.app-shell{display:block}.sidebar{width:100%;height:67px;position:sticky;top:0;flex-direction:row;align-items:center;padding:0 16px;justify-content:space-between;border-bottom:1px solid #2d383d}.brand{margin:0;font-size:19px;gap:8px;letter-spacing:1px}.brand-mark{width:30px;height:33px;border-radius:9px;font-size:30px}.brand small{font-size:6px;letter-spacing:1px;margin-top:2px}.sidebar-label,.sidebar-guide,.sidebar-footer{display:none}nav{display:flex;gap:5px}.nav-item{font-size:0;gap:0;padding:11px 12px;border-radius:7px;justify-content:center;width:41px}.nav-item svg{width:18px;height:18px}.nav-item .nav-dot{display:none}main{margin:0;width:100%;padding:0 16px}.topbar{height:54px;font-size:9px}.breadcrumb span{margin:0 8px}.tuning{font-size:8px;letter-spacing:0;gap:4px}.tuning svg{display:none}.topbar-right{gap:9px}.sound-button{width:27px;height:27px}.greeting{padding:27px 0 22px;align-items:center;gap:12px}.eyebrow{font-size:7px;letter-spacing:1.5px}h1,.greeting h1{font-size:23px;letter-spacing:0;margin:10px 0 8px}.greeting p{font-size:10px;max-width:245px}.streak-badge{padding:9px 11px;gap:7px;flex-shrink:0}.streak-badge svg{width:18px;height:22px}.streak-badge strong{font-size:20px}.streak-badge div>span{font-size:8px}.streak-badge small{font-size:9px}.daily-strip{padding:13px 12px;gap:9px;margin-bottom:17px}.daily-icon{width:31px;height:31px;flex-shrink:0}.daily-icon svg{width:16px;height:16px}.daily-copy strong{font-size:10px}.daily-copy span{font-size:8px;max-width:170px;line-height:1.7}.daily-meter{min-width:70px;gap:7px}.daily-meter .meter-track{width:45px}.daily-meter span{font-size:8px}.workspace-grid{gap:15px}.card-top{padding:17px 17px 0}.section-label{font-size:11px}.small-muted{font-size:9px}.mode-tabs{margin-top:19px}.mode-tab{font-size:10px;padding:9px 12px}.intro-prompt{padding:21px 16px 0}.intro-title{font-size:20px}.intro-description{font-size:10px}.intro-prompt .preview-notes{margin:18px 0}.intro-prompt .start-row{margin:21px 0}.board-wrap{padding:0 12px 4px}.fretboard{min-width:475px}.board-legend{margin-left:17px;margin-right:17px;font-size:8px}.exercise-bottom{margin:15px 17px 0;gap:8px;min-height:65px}.subtle-hint{font-size:9px}.keyboard-tip{display:none}.primary-button{padding:11px 16px;font-size:11px;gap:13px}.right-rail{grid-template-columns:1fr 1fr;gap:12px}.lesson-card{padding:15px 13px}.rail-label{font-size:9px}.rail-label>span{font-size:8px}.lesson-card h2{font-size:12px}.lesson-card>p{font-size:9px;line-height:1.6;min-height:28px}.lesson-meta{font-size:8px;margin-top:10px}.lesson-actions{gap:5px}.lesson-actions .text-button{font-size:8px}.secondary-button{padding:9px 8px;font-size:9px;gap:5px}.lesson-actions .secondary-button{padding:8px 7px}.review-card{padding:15px 12px;gap:7px}.review-card h3{font-size:11px}.review-card p{font-size:9px}.review-link{font-size:9px;gap:25px;margin-left:0}.review-icon svg{width:14px;height:14px}.little-tip{margin-top:-55px;padding-left:3px;gap:5px}.little-tip p{font-size:8px}.little-tip svg{width:12px;height:12px}.bottom-stats{margin-top:16px;padding:16px 0}.bottom-stats>div{padding:0 10px;gap:7px;align-items:start}.stat-icon{height:27px;width:27px;border-radius:7px}.stat-icon svg{width:13px;height:13px}.bottom-stats p>span{font-size:8px}.bottom-stats strong{font-size:17px}.bottom-stats small{font-size:7px;line-height:1.5}.main-footer{font-size:8px;padding:21px 0}.question-area{padding:22px 16px 13px}.note-display{font-size:55px}.question-kicker{font-size:10px}.question-prompt{font-size:10px}.range-chip{font-size:9px}.answer-options{padding:14px 15px 0;gap:5px}.answer-option{padding:9px 3px;font-size:12px;min-height:40px}.answer-option small{font-size:8px}.feedback strong{font-size:11px}.feedback{font-size:10px}.map-card,.progress-card{padding:17px}.map-header h2,.progress-header h2{font-size:14px}.map-header p,.progress-header p{font-size:9px;line-height:1.8}.map-header select{font-size:9px;padding:7px}.map-header{gap:10px}.map-info-grid{grid-template-columns:1fr;gap:12px}.info-tile{padding:17px}.map-detail{padding:15px;gap:15px}.map-detail p{font-size:10px}.map-detail strong{font-size:25px}.progress-summary{gap:10px;margin-bottom:16px}.progress-summary>div{padding:16px 13px}.progress-summary span{font-size:9px}.progress-summary strong{font-size:25px}.progress-header{gap:10px;align-items:start}.progress-header .secondary-button{font-size:9px;padding:8px}.data-actions .text-button{font-size:10px}.result-stats{gap:30px}.result-area h2{font-size:22px}.result-stats strong{font-size:24px}dialog{padding:22px}.dialog-head h2{font-size:21px}.help-content{font-size:11px}.notice{font-size:10px;line-height:1.8}.hint-box{margin:12px 17px 0;font-size:10px}}@media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important;scroll-behavior:auto!important}}
+
+.solfege-button{border:1px solid #e1e4df;border-radius:6px;padding:7px 9px;font-size:10px;white-space:nowrap;color:#7d8589}.solfege-button[aria-pressed=true]{background:var(--accent-soft);color:#b96943;border-color:#f1ccb5}.solfege-label{font-size:14px!important;font-weight:500!important;color:#b17c57!important}.map-detail>.sound-inline{margin-left:auto;white-space:nowrap;flex-shrink:0}.map-detail>p{min-width:0}.map-detail>strong{flex-shrink:0}@media(max-width:640px){.tuning{display:none}.topbar-right{gap:7px}.solfege-button{font-size:9px;padding:6px 7px}.map-detail{flex-wrap:wrap}.map-detail>strong{font-size:22px}.map-detail>p{flex:1;min-width:150px}}
+
+/* Keep every 0–12 fret position visible as an individual sound button. */
+#map-view .fretboard{min-width:684px}
+#map-view .string-row{height:58px}
+#map-view .fret-cell{height:58px;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px}
+.cell-solfege{position:relative;z-index:1;display:block;padding:0 2px;background:var(--paper);color:#727e80;font-size:9px;line-height:1.3;white-space:nowrap}
+.map-selected .cell-solfege{color:#ae5d36;font-weight:600}
+.map-controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.map-controls .secondary-button{white-space:nowrap;padding:10px 12px;font-size:11px}
+@media(max-width:760px){.map-header{flex-wrap:wrap}.map-controls{width:100%}}
+
+  </style>
+
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#practice" aria-label="弦记首页"><span class="brand-mark">♮</span><span>弦记<small>FRET NOTES</small></span></a>
+      <div class="sidebar-label">你的练习室</div>
+      <nav aria-label="主导航">
+        <button class="nav-item active" data-view="practice"><span data-icon="practice"></span>今日练习<span class="nav-dot"></span></button>
+        <button class="nav-item" data-view="map"><span data-icon="map"></span>指板地图</button>
+        <button class="nav-item" data-view="progress"><span data-icon="chart"></span>我的进度</button>
+      </nav>
+      <div class="sidebar-guide"><span class="tiny-stars">✦</span><strong>记一点，就进步一点。</strong><p>不必一次背下整块指板。<br>今天，先认识几个新朋友。</p><div class="mini-strings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b></div></div>
+      <div class="sidebar-footer"><span class="status-dot"></span>本机保存 · 无需登录<button id="help-button" aria-label="使用说明">?</button></div>
+    </aside>
+    <main>
+      <header class="topbar"><div class="breadcrumb">我的练习室 <span>/</span> <strong id="page-label">今日练习</strong></div><div class="topbar-right"><span class="tuning"><span data-icon="guitar"></span>标准调弦 E A D G B E</span><button class="solfege-button" id="solfege-button" aria-pressed="true" title="固定唱名：C=do，D=re；开启本地语音朗读">唱名：开</button><button class="sound-button" id="sound-button" aria-label="开启音效" aria-pressed="false"><span data-icon="sound"></span></button></div></header>
+      <section class="greeting"><div><div class="eyebrow"><span></span> A LITTLE EVERY DAY</div><h1 id="page-title">让每个音，都有位置<span>。</span></h1><p id="page-subtitle">像记单词一样记指板。每天 5 分钟，从陌生到熟悉。</p></div><div class="streak-badge"><span data-icon="flame"></span><div><strong id="streak-count">0 <small>天</small></strong><span>连续练习</span></div></div></section>
+      <div id="storage-warning" class="notice hidden" role="status">浏览器未允许本地存储，本次仍可练习；关闭页面后进度可能丢失。</div>
+      <section id="practice-view" class="page-view">
+        <div class="daily-strip"><div class="daily-icon" data-icon="sun"></div><div class="daily-copy"><strong>今天的小目标</strong><span>完成 10 次回忆，让记忆更牢一点。</span></div><div class="daily-meter"><div class="meter-track"><i id="daily-fill"></i></div><span id="daily-count">0 / 10</span></div><span id="daily-status" class="pill muted-pill">慢慢来，也很快</span></div>
+        <div class="workspace-grid">
+          <section class="practice-card" aria-label="指板练习">
+            <div class="card-top"><div class="section-label"><span class="accent-line"></span><span id="exercise-heading">今日练习</span></div><span id="session-step" class="small-muted">准备好就开始</span></div>
+            <div class="mode-tabs" role="group" aria-label="练习方式"><button class="mode-tab active" data-mode="find"><span data-icon="target"></span>看音找位置</button><button class="mode-tab" data-mode="name"><span data-icon="note"></span>看位置认音</button></div>
+            <div id="exercise-content"></div>
+          </section>
+          <aside class="right-rail">
+            <section class="lesson-card"><div class="rail-label">当前学习单元<span>01 / 06</span></div><div class="lesson-art" aria-hidden="true"><div class="art-circle"></div><div class="art-neck"><i></i><i></i><i></i><i></i><i></i><b></b><b></b><b></b></div><span>6</span></div><h2 id="lesson-title">第 6 弦 · 路标音</h2><p id="lesson-description">从最粗的一根弦开始</p><div class="lesson-meta"><span id="lesson-note-count">5 个位置</span><span id="lesson-learned">已认识 0 个</span></div><div class="meter-track"><i id="lesson-fill"></i></div><div class="lesson-actions"><button id="study-button" class="secondary-button">先认一遍<span>↗</span></button><button id="lesson-button" class="text-button">切换单元</button></div></section>
+            <section class="review-card"><span class="review-icon" data-icon="repeat"></span><div><h3>给记忆浇浇水</h3><p id="review-copy">到期的音，会在这里等你。</p></div><button id="review-button" class="review-link">开始复习<span>↗</span></button></section>
+            <div class="little-tip"><span data-icon="bulb"></span><p id="little-tip-text">一品就是一个半音。<br><strong>B–C、E–F</strong> 之间只差一品。</p></div>
+          </aside>
+        </div>
+        <section class="bottom-stats" aria-label="学习概况"><div><span class="stat-icon peach" data-icon="note"></span><p><span>已经认识</span><strong id="stat-learned">0 <small>/ 78 个位置</small></strong></p></div><div><span class="stat-icon mint" data-icon="check"></span><p><span>长期记忆</span><strong id="stat-mastered">0 <small>个位置</small></strong></p></div><div><span class="stat-icon lavender" data-icon="target"></span><p><span>累计正确率</span><strong id="stat-accuracy">—</strong></p></div></section>
+      </section>
+      <section id="map-view" class="page-view hidden"></section>
+      <section id="progress-view" class="page-view hidden"></section>
+      <footer class="main-footer"><span>慢慢记，慢慢弹，总会成为你的肌肉记忆。</span><span>MADE FOR YOUR FIRST NOTES <span class="footer-note">♫</span></span></footer>
+    </main>
+  </div>
+  <dialog id="lesson-dialog" aria-labelledby="lesson-dialog-title"><div class="dialog-head"><div><div class="eyebrow">YOUR LEARNING PATH</div><h2 id="lesson-dialog-title">一次，走一小步。</h2></div><button class="close-dialog icon-button" aria-label="关闭">×</button></div><p class="dialog-intro">每轮最多引入 5 个新位置。你可以自由选择练习单元。</p><div id="lesson-list"></div></dialog>
+  <dialog id="help-dialog" aria-labelledby="help-title"><div class="dialog-head"><h2 id="help-title">欢迎来到弦记。</h2><button class="close-dialog icon-button" aria-label="关闭">×</button></div><div class="help-content"><p>这里把每个「弦＋品」位置当成一张单词卡。建议先点「先认一遍」，再开始回忆练习。</p><ol><li><strong>看音找位置：</strong>按题目指定的弦，在指板上点击对应音。相同音名出现在多个品时，任意正确位置都算对。</li><li><strong>看位置认音：</strong>辨认指板上标亮位置的音名。C♯ 与 D♭ 等同音异名视为同一个答案。</li><li><strong>间隔复习：</strong>按时答对后，复习间隔依次为 10 分钟、1 天、3 天、7 天、14 天。提前加练会记录成绩，但不会跳过间隔；答错会在本轮回访，并在 1 分钟后到期。</li></ol><p>「长期记忆」指至少完成三轮按间隔复习的位置，是练习指标，不代表永远不会忘记。0 品是空弦；最上方是最细的 1 弦，下方是最粗的 6 弦。</p><p>声音包含合成参考音和可开关的唱名朗读。这里使用固定唱名：C=do、D=re、E=mi、F=fa、G=sol、A=la、B=si；换调后也保持这套对应。朗读使用设备已安装的本地中英文语音，是念唱名，不是按音高演唱；没有本地语音时仍可听参考音和看唱名。顶部喇叭控制声音，「唱名」控制朗读。指板地图点击即试听；练习只在作答后播放，避免提前提示答案。数据保存在当前浏览器，无需账号。更换浏览器或清除网站数据后，需重新积累进度。可在「我的进度」导出备份。</p></div></dialog>
+  <div id="toast" class="toast hidden" role="status"></div>
+  <script>
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.FretNotes = factory();
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const NOTES = ['C', 'C♯', 'D', 'D♯', 'E', 'F', 'F♯', 'G', 'G♯', 'A', 'A♯', 'B'];
+  const SOLFEGE = {
+    'C': ['do', '哆', 'doh'], 'C♯': ['升 do / 降 re', '升哆，也叫降来', 'sharp doh, or flat ray'],
+    'D': ['re', '来', 'ray'], 'D♯': ['升 re / 降 mi', '升来，也叫降咪', 'sharp ray, or flat me'],
+    'E': ['mi', '咪', 'me'], 'F': ['fa', '发', 'fah'],
+    'F♯': ['升 fa / 降 sol', '升发，也叫降嗦', 'sharp fah, or flat sol'],
+    'G': ['sol', '嗦', 'sol'], 'G♯': ['升 sol / 降 la', '升嗦，也叫降拉', 'sharp sol, or flat lah'],
+    'A': ['la', '拉', 'lah'], 'A♯': ['升 la / 降 si', '升拉，也叫降西', 'sharp lah, or flat see'],
+    'B': ['si', '西', 'see']
+  };
+  function solfege(note) {
+    const entry = SOLFEGE[note];
+    if (!entry) throw new Error('Unknown note');
+    return { label: entry[0], spoken: entry[1], english: entry[2] };
+  }
+  const OPEN = { 1: 64, 2: 59, 3: 55, 4: 50, 5: 45, 6: 40 };
+  const NATURAL = new Set(['C', 'D', 'E', 'F', 'G', 'A', 'B']);
+  const INTERVALS = [0, 10 * 60000, 86400000, 3 * 86400000, 7 * 86400000, 14 * 86400000];
+  const FLATS = { 'C♯': 'D♭', 'D♯': 'E♭', 'F♯': 'G♭', 'G♯': 'A♭', 'A♯': 'B♭' };
+  function card(string, fret) {
+    const midi = OPEN[string] + fret;
+    return { id: `${string}-${fret}`, string, fret, midi, note: NOTES[midi % 12], octave: Math.floor(midi / 12) - 1 };
+  }
+  const ALL = [];
+  for (let s = 6; s >= 1; s--) for (let f = 0; f <= 12; f++) ALL.push(card(s, f));
+  function naturalCards(s) { return ALL.filter(c => c.string === s && NATURAL.has(c.note)); }
+  const LESSONS = [
+    { id: 'six', title: '第 6 弦 · 路标音', subtitle: '从最粗的一根弦开始', tag: '起点', cards: [0, 3, 5, 7, 12].map(f => card(6, f)) },
+    { id: 'five', title: '第 5 弦 · 路标音', subtitle: '找到常用和弦的根音', tag: '基础', cards: [0, 3, 5, 7, 12].map(f => card(5, f)) },
+    { id: 'bass', title: '低音弦 · 自然音', subtitle: '把路标之间的音补齐', tag: '进阶', cards: [...naturalCards(6), ...naturalCards(5)] },
+    { id: 'middle', title: '第 4、3 弦 · 自然音', subtitle: '将记忆扩展到中间两根弦', tag: '进阶', cards: [...naturalCards(4), ...naturalCards(3)] },
+    { id: 'treble', title: '第 2、1 弦 · 自然音', subtitle: '连接高音区的音名', tag: '进阶', cards: [...naturalCards(2), ...naturalCards(1)] },
+    { id: 'all', title: '整块指板 · 全部音', subtitle: '加入升降音，挑战 0–12 品', tag: '挑战', cards: ALL }
+  ];
+  function localDay(time = Date.now()) {
+    const d = new Date(time);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+  function blankState() { return { version: 1, cards: {}, days: {}, lesson: 'six', mode: 'find', sound: true, solfege: true, sessions: 0 }; }
+  function loadState(raw) {
+    try {
+      const x = JSON.parse(raw);
+      if (!x || x.version !== 1 || !x.cards || typeof x.cards !== 'object' || Array.isArray(x.cards)) return blankState();
+      const state = blankState();
+      for (const c of ALL) {
+        const p = x.cards[c.id];
+        if (!p || typeof p !== 'object') continue;
+        if (![p.box, p.due, p.correct, p.wrong].every(Number.isFinite)) continue;
+        if (p.box < 0 || p.box > 5 || p.correct < 0 || p.wrong < 0 || !Number.isInteger(p.box)) continue;
+        state.cards[c.id] = { box: p.box, due: p.due, correct: p.correct, wrong: p.wrong };
+      }
+      if (x.days && typeof x.days === 'object') for (const [key, val] of Object.entries(x.days)) {
+        if (/^\d{4}-\d{2}-\d{2}$/.test(key) && Number.isInteger(val) && val >= 0) state.days[key] = val;
+      }
+      state.lesson = LESSONS.some(l => l.id === x.lesson) ? x.lesson : 'six';
+      state.mode = ['find', 'name'].includes(x.mode) ? x.mode : 'find';
+      state.sound = typeof x.sound === 'boolean' ? x.sound : true;
+      state.solfege = x.solfege !== false;
+      state.sessions = Number.isInteger(x.sessions) && x.sessions >= 0 ? x.sessions : 0;
+      return state;
+    } catch { return blankState(); }
+  }
+  function grade(state, id, correct, now = Date.now()) {
+    if (!ALL.some(c => c.id === id)) throw new Error('Unknown card');
+    const old = state.cards[id];
+    const p = old || { box: 0, due: 0, correct: 0, wrong: 0 };
+    let box = p.box;
+    let due = p.due;
+    if (correct) {
+      // Extra practice counts toward accuracy, but cannot fast-forward spaced repetition.
+      if (!old || now >= p.due) { box = Math.min(5, p.box + 1); due = now + INTERVALS[box]; }
+    } else { box = 0; due = now + 60000; }
+    state.cards[id] = { box, due, correct: p.correct + (correct ? 1 : 0), wrong: p.wrong + (correct ? 0 : 1) };
+    const day = localDay(now);
+    state.days[day] = (state.days[day] || 0) + 1;
+    return state.cards[id];
+  }
+  function shuffle(items, rng = Math.random) {
+    const result = [...items];
+    for (let i = result.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [result[i], result[j]] = [result[j], result[i]]; }
+    return result;
+  }
+  function makeQueue(state, lessonId, now = Date.now(), rng = Math.random, reviewOnly = false, focusCards = null) {
+    const lesson = LESSONS.find(l => l.id === lessonId) || LESSONS[0];
+    const due = ALL.filter(c => state.cards[c.id] && state.cards[c.id].due <= now)
+      .sort((a, b) => state.cards[a.id].due - state.cards[b.id].due);
+    if (reviewOnly) return due.slice(0, 10);
+    const practiceCards = focusCards && focusCards.length ? focusCards.filter(c => lesson.cards.some(x => x.id === c.id)).slice(0, 5) : lesson.cards;
+    const fresh = shuffle(practiceCards.filter(c => !state.cards[c.id]), rng).slice(0, 5);
+    const chosen = [...due.slice(0, 5), ...fresh];
+    const seen = new Set(chosen.map(c => c.id));
+    const rest = shuffle(practiceCards.filter(c => state.cards[c.id] && !seen.has(c.id)), rng);
+    chosen.push(...rest.slice(0, Math.max(0, 10 - chosen.length)));
+    if (!chosen.length) chosen.push(...shuffle(practiceCards.length ? practiceCards : lesson.cards, rng).slice(0, 10));
+    // Short lessons repeat their small vocabulary; no more than five new cards per session.
+    const pool = [...chosen];
+    while (chosen.length < 10) {
+      const alternatives = pool.filter(c => c.id !== chosen.at(-1).id);
+      chosen.push((alternatives.length ? alternatives : pool)[Math.floor(rng() * (alternatives.length || pool.length))]);
+    }
+    return chosen.slice(0, 10);
+  }
+  function streak(state, now = Date.now()) {
+    const d = new Date(now); d.setHours(12, 0, 0, 0);
+    if (!state.days[localDay(d)]) d.setDate(d.getDate() - 1);
+    let count = 0;
+    while (state.days[localDay(d)]) { count++; d.setDate(d.getDate() - 1); }
+    return count;
+  }
+  function stats(state, now = Date.now()) {
+    const ps = Object.values(state.cards);
+    const attempts = ps.reduce((n, p) => n + p.correct + p.wrong, 0);
+    return { learned: ps.length, mastered: ps.filter(p => p.box >= 3).length,
+      due: ps.filter(p => p.due <= now).length, attempts,
+      accuracy: attempts ? Math.round(ps.reduce((n, p) => n + p.correct, 0) / attempts * 100) : 0,
+      today: state.days[localDay(now)] || 0, streak: streak(state, now) };
+  }
+  function displayNote(note) { return FLATS[note] ? `${note} / ${FLATS[note]}` : note; }
+  return { solfege, NOTES, OPEN, ALL, LESSONS, INTERVALS, NATURAL, card, localDay, blankState, loadState, grade, shuffle, makeQueue, streak, stats, displayNote };
+});
+
+
+
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) module.exports = factory();
+  else root.FretAudio = factory();
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  function frequency(midi) { return 440 * 2 ** ((midi - 69) / 12); }
+  function createPlayer(env, solfege, notify = () => {}) {
+    let audio, active = null;
+    const warned = new Set();
+    function warn(message) { if (!warned.has(message)) { warned.add(message); notify(message); } }
+    function cancelSpeech() { try { env.speechSynthesis?.cancel(); } catch {} }
+    function stop() {
+      cancelSpeech();
+      if (active) { try { active.stop(); } catch {} active = null; }
+    }
+    function speak(note) {
+      const synth = env.speechSynthesis, Utterance = env.SpeechSynthesisUtterance;
+      if (!synth || !Utterance) { warn('此浏览器不支持唱名朗读，仍会播放参考音并显示唱名。'); return; }
+      try {
+        // Use installed voices only, keeping note names on this device.
+        const local = synth.getVoices().filter(v => v.localService === true);
+        const voice = local.find(v => /^zh(?:-|_)/i.test(v.lang)) || local.find(v => /^en(?:-|_)/i.test(v.lang));
+        if (!voice) { warn('暂未找到本地中英文语音，请稍后重试；参考音和唱名显示仍可使用。'); return; }
+        const info = solfege(note), chinese = /^zh(?:-|_)/i.test(voice.lang);
+        const utterance = new Utterance(chinese ? info.spoken : info.english);
+        utterance.voice = voice; utterance.lang = voice.lang; utterance.rate = .8; utterance.volume = .9;
+        // Speech labels the syllable. The oscillator supplies the musical pitch.
+        utterance.onerror = e => { if (!['canceled', 'interrupted'].includes(e.error)) warn('唱名朗读暂不可用，仍可听参考音和查看唱名。'); };
+        synth.cancel(); synth.speak(utterance);
+      } catch { warn('唱名朗读暂不可用，仍可听参考音和查看唱名。'); }
+    }
+    async function play(card, settings, force = false) {
+      if (!settings.sound && !force) return;
+      stop();
+      try {
+        const AudioClass = env.AudioContext || env.webkitAudioContext;
+        if (AudioClass) {
+          audio ||= new AudioClass();
+          const oscillator = audio.createOscillator(), gain = audio.createGain();
+          // Bind to this gesture before awaiting a suspended context.
+          active = oscillator;
+          if (audio.state === 'suspended') await audio.resume();
+          if (active !== oscillator) return;
+          const now = audio.currentTime;
+          oscillator.type = 'triangle'; oscillator.frequency.value = frequency(card.midi);
+          gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(.12, now + .015);
+          gain.gain.exponentialRampToValueAtTime(.001, now + .8);
+          oscillator.connect(gain); gain.connect(audio.destination); oscillator.start(now); oscillator.stop(now + .85);
+        } else warn('此浏览器不支持参考音，仍可查看唱名。');
+      } catch { warn('参考音暂不可用，仍可查看唱名。'); }
+      if (settings.solfege) speak(card.note);
+    }
+    // Ask the browser to load the installed voice list before the first gesture.
+    try { env.speechSynthesis?.getVoices(); } catch {}
+    return { play, stop };
+  }
+  return { frequency, createPlayer };
+});
+
+(() => {
+  'use strict';
+  const F = window.FretNotes;
+  const KEY = 'fret-notes-v1';
+  const $ = (q, root = document) => root.querySelector(q);
+  const $$ = (q, root = document) => [...root.querySelectorAll(q)];
+  const icons = {
+    practice: '<rect x="4" y="3" width="16" height="18" rx="3"/><path d="m8 12 3 3 5-6"/>',
+    map: '<path d="m3 5 6-2 6 2 6-2v16l-6 2-6-2-6 2V5Z"/><path d="M9 3v16m6-14v16"/>',
+    chart: '<path d="M4 3v17h17M8 15v-4m5 4V7m5 8V4"/>',
+    guitar: '<path d="m14 10 6-6m-2-2 4 4m-8 4c-3-3-5-2-5 0 0 1-1 2-2 2-5 0-6 6-2 9s9-1 7-5c-1-1 0-2 1-2 2 0 3-2 1-4Z"/><circle cx="8" cy="16" r="1.5"/>',
+    sound: '<path d="m11 4-5 4H3v8h3l5 4V4Z"/><path d="M15 8c2 2 2 6 0 8m3-11c4 4 4 10 0 14"/>',
+    mute: '<path d="m11 4-5 4H3v8h3l5 4V4Z"/><path d="m16 9 6 6m0-6-6 6"/>',
+    flame: '<path d="M13 2c1 6-3 6-3 10-2-1-3-2-3-4-3 3-4 6-2 10 3 6 13 5 15-1 2-5-2-10-7-15Z"/><path d="M12 14c-4 5 2 8 4 4"/>',
+    sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/>',
+    target: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/>',
+    note: '<path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2.5"/><ellipse cx="17" cy="16" rx="3" ry="2.5"/>',
+    repeat: '<path d="M20 7H7l3-3M4 17h13l-3 3M20 7v5M4 17v-5"/>',
+    bulb: '<path d="M9 18h6m-5 3h4M8 14a6 6 0 1 1 8 0c-1 1-1 2-1 2H9s0-1-1-2Z"/>',
+    check: '<path d="m5 12 4 4L19 6"/>',
+    keyboard: '<rect x="2" y="5" width="20" height="14" rx="3"/><path d="M5 9h1m3 0h1m3 0h1m3 0h1M5 12h1m3 0h1m3 0h1m3 0h1M7 16h10"/>'
+  };
+  function icon(name) { return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name] || icons.note}</svg>`; }
+  function hydrateIcons(root = document) { $$('[data-icon]', root).forEach(el => { el.innerHTML = icon(el.dataset.icon); }); }
+  let state, storageOK = true;
+  try { state = F.loadState(localStorage.getItem(KEY)); } catch { state = F.blankState(); storageOK = false; }
+  let view = 'practice', session = null, study = null, mapNote = '', mapSelected = null, toastTimer;
+  const player = window.FretAudio.createPlayer(window, F.solfege, toast);
+  const content = $('#exercise-content');
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch { storageOK = false; }
+    $('#storage-warning').classList.toggle('hidden', storageOK);
+  }
+  function toast(message) {
+    clearTimeout(toastTimer); $('#toast').textContent = message; $('#toast').classList.remove('hidden');
+    toastTimer = setTimeout(() => $('#toast').classList.add('hidden'), 4200);
+  }
+  function lesson() { return F.LESSONS.find(l => l.id === state.lesson) || F.LESSONS[0]; }
+  function play(c, force = false) {
+    if (!state.sound && !force) return;
+    player.play(c, state, force);
+  }
+  function range(c) { return c.fret <= 5 ? [0, 5] : [6, 12]; }
+  function pos(c) { return `第 ${c.string} 弦 · ${c.fret === 0 ? '空弦' : `${c.fret} 品`}`; }
+  function board(options = {}) {
+    const { target, reveal = false, wrong, preview = false, map = false, filter = '' } = options;
+    let html = '<div class="board-wrap"><div class="fretboard"><div class="fret-numbers"><span>弦</span>';
+    for (let f = 0; f <= 12; f++) html += `<span class="${[0, 3, 5, 7, 9, 12].includes(f) ? 'marked' : ''}">${f === 0 ? '空弦' : f}</span>`;
+    html += '</div>';
+    for (let s = 1; s <= 6; s++) {
+      html += `<div class="string-row ${target && target.string === s ? 'target-string' : ''}" style="--weight:${.6 + s * .22}px"><span class="string-label"><b>${s}</b>${F.card(s, 0).note}</span>`;
+      for (let f = 0; f <= 12; f++) {
+        const c = F.card(s, f), isTarget = target && target.id === c.id;
+        let cls = 'fret-cell', label = '', disabled = '', extra = '', syllable = '';
+        if (preview) {
+          disabled = 'disabled';
+          if (lesson().cards.some(x => x.id === c.id)) { cls += ' known-dot'; label = c.note; }
+        } else if (map) {
+          cls += ' map-cell';
+          if (!F.NATURAL.has(c.note)) cls += ' accidental';
+          if (filter && filter !== c.note) { cls += ' out-of-range'; extra = 'style="opacity:.25"'; }
+          if (state.cards[c.id]?.box >= 3) cls += ' map-mastered';
+          if (mapSelected?.id === c.id) cls += ' map-selected';
+          label = c.note;
+          syllable = `<small class="cell-solfege">${F.solfege(c.note).label.split(' / ')[0].replace(/ /g, '')}</small>`;
+        } else {
+          if (target && session && state.mode === 'find') {
+            const [lo, hi] = range(target);
+            if (s !== target.string || f < lo || f > hi) cls += ' out-of-range';
+          }
+          if (isTarget && (state.mode === 'name' || study)) { cls += ' focus-dot'; label = reveal ? c.note : '?'; }
+          if (isTarget && reveal) { cls += ' answer-dot'; label = c.note; }
+          if (wrong === c.id) { cls += ' wrong-dot'; label = c.note; }
+          if (study || session?.answered || state.mode === 'name') disabled = 'disabled';
+        }
+        const aria = `${s} 弦 ${f === 0 ? '空弦' : `${f} 品`}${map ? `，${F.displayNote(c.note)}，${c.note}${c.octave}，${F.solfege(c.note).label}，点击播放` : preview ? `，${F.displayNote(c.note)}` : ''}`;
+        html += `<button class="${cls}" data-string="${s}" data-fret="${f}" aria-label="${aria}" ${disabled} ${extra} ${map ? `aria-pressed="${mapSelected?.id === c.id}"` : ''}><span class="note-dot">${label}</span>${syllable}</button>`;
+      }
+      html += '</div>';
+    }
+    html += '<div class="fret-markers"><span></span>';
+    for (let f = 0; f <= 12; f++) html += `<span>${[3, 5, 7, 9].includes(f) ? '•' : f === 12 ? '••' : ''}</span>`;
+    return html + '</div></div></div><div class="board-legend"><span><i class="legend-dot"></i>上方 1 弦最细，下方 6 弦最粗</span><span>0 = 空弦 · 可左右滑动</span></div>';
+  }
+  function updateStats() {
+    const s = F.stats(state), l = lesson();
+    $('#streak-count').innerHTML = `${s.streak} <small>天</small>`;
+    $('#daily-fill').style.width = `${Math.min(100, s.today * 10)}%`;
+    $('#daily-count').textContent = `${Math.min(10, s.today)} / 10`;
+    $('#daily-status').textContent = s.today >= 10 ? '今日目标已完成 ✓' : '慢慢来，也很快';
+    $('#stat-learned').innerHTML = `${s.learned} <small>/ 78 个位置</small>`;
+    $('#stat-mastered').innerHTML = `${s.mastered} <small>个位置</small>`;
+    $('#stat-accuracy').textContent = s.attempts ? `${s.accuracy}%` : '—';
+    $('#lesson-title').textContent = l.title;
+    $('#lesson-description').textContent = l.subtitle;
+    $('.rail-label>span').textContent = `${String(F.LESSONS.indexOf(l) + 1).padStart(2, '0')} / 06`;
+    $('.lesson-art>span').textContent = l.id === 'six' ? '6' : l.id === 'five' ? '5' : '♫';
+    $('#lesson-note-count').textContent = `${l.cards.length} 个位置`;
+    const learned = l.cards.filter(c => state.cards[c.id]).length;
+    $('#lesson-learned').textContent = `已认识 ${learned} 个`;
+    $('#lesson-fill').style.width = `${learned / l.cards.length * 100}%`;
+    $('#review-copy').textContent = s.due ? `${s.due} 个位置到期了，回忆一下吧。` : '暂时没有到期的音，继续探索吧。';
+    $('#review-button').disabled = !s.due;
+    $('#sound-button').setAttribute('aria-pressed', String(state.sound));
+    $('#sound-button').setAttribute('aria-label', state.sound ? '关闭声音' : '开启声音');
+    $('#solfege-button').setAttribute('aria-pressed', String(state.solfege));
+    $('#solfege-button').textContent = `唱名：${state.solfege ? '开' : '关'}`;
+    $('#sound-button').innerHTML = icon(state.sound ? 'sound' : 'mute');
+    const mapSound = $('#map-sound-toggle');
+    if (mapSound) {
+      mapSound.textContent = state.sound ? '点击发声：开' : '点击发声：关';
+      mapSound.setAttribute('aria-pressed', String(state.sound));
+    }
+  }
+  function modeUI() {
+    $$('.mode-tab').forEach(b => { b.classList.toggle('active', b.dataset.mode === state.mode); b.setAttribute('aria-pressed', String(b.dataset.mode === state.mode)); });
+  }
+  function renderIntro() {
+    session = null; study = null; modeUI();
+    $('#exercise-heading').textContent = '今日练习';
+    $('#session-step').textContent = '约 3–5 分钟 / 每轮 10 题';
+    const unique = [...new Set(lesson().cards.map(c => c.note))].slice(0, 7);
+    content.innerHTML = `<div class="intro-prompt"><div class="mini-label">SMALL STEPS. REAL PROGRESS.</div><h2 class="intro-title">今天，和几个音熟悉一下。</h2><p class="intro-description">${state.mode === 'find' ? '看到音名，在指定的弦上找到它的位置。' : '看到指板上的位置，试着说出它的音名。'}<br>一次记一点，每次都更确定一点。</p><div class="preview-notes">${unique.map(n => `<span>${n}</span>`).join('')}</div><div class="start-row"><button id="start-button" class="primary-button">开始今日练习<span class="arrow">→</span></button><small>新手可以先点右侧「先认一遍」</small></div></div><div class="intro-board">${board({ preview: true })}</div><div class="exercise-bottom"><span class="subtle-hint">${icon('bulb')}小提示：不用背整块指板，从路标开始。</span><span class="keyboard-tip">一次最多 5 个新位置</span></div>`;
+    $('#start-button').addEventListener('click', () => startSession(false));
+  }
+  function startSession(reviewOnly = false, focusCards = null) {
+    study = null;
+    const queue = F.makeQueue(state, state.lesson, Date.now(), Math.random, reviewOnly, focusCards);
+    if (!queue.length) { toast('暂时没有到期的位置，可以先做今日练习。'); return; }
+    session = { queue, index: 0, correct: 0, answered: false, wrongIds: new Set(), retried: new Set(), originalLength: queue.length, started: Date.now(), reviewOnly };
+    switchView('practice', false); renderQuestion();
+  }
+  function renderQuestion() {
+    player.stop();
+    if (!session) return renderIntro();
+    const c = session.queue[session.index];
+    if (!c) return renderResult();
+    session.answered = false; session.wrongClick = null; modeUI();
+    $('#exercise-heading').textContent = session.reviewOnly ? '到期复习' : '回忆练习';
+    $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
+    const [lo, hi] = range(c);
+    const nameMode = state.mode === 'name';
+    content.innerHTML = `<div class="session-progress"><i style="width:${session.index / session.queue.length * 100}%"></i></div><div class="question-area"><p class="question-kicker">${nameMode ? '看看标记的位置，它是什么音？' : '找到这个音，轻轻点一下。'}</p>${nameMode ? '<h2 class="note-title">这个位置，叫什么？</h2>' : `<div class="note-display">${c.note}${F.displayNote(c.note).includes('/') ? `<small>/ ${F.displayNote(c.note).split(' / ')[1]}</small>` : ''}</div>`}<p class="question-prompt"><span class="range-chip">${nameMode ? pos(c) : `第 ${c.string} 弦 · ${lo}–${hi} 品`}</span>${nameMode ? '从下方选择音名' : c.string === 6 ? '最粗的那根弦' : c.string === 1 ? '最细的那根弦' : '从细到粗数弦号'}</p></div><div id="question-board">${board({ target: c })}</div>${nameMode ? `<div class="answer-options">${F.NOTES.map(n => `<button class="answer-option" data-answer="${n}" aria-label="${F.displayNote(n)}">${n}${F.displayNote(n).includes('/') ? `<small>${F.displayNote(n).split(' / ')[1]}</small>` : ''}</button>`).join('')}</div>` : ''}<div id="hint-slot"></div><div class="exercise-bottom"><button id="hint-button" class="text-button">给我一个提示</button><span id="answer-instruction" class="subtle-hint">${nameMode ? '先想一想，再选择。' : '点击指板上的位置作答。'}</span><button id="next-button" class="primary-button hidden">下一题<span class="arrow">→</span></button></div>`;
+    if (nameMode) $$('.answer-option', content).forEach(b => b.addEventListener('click', () => answer(b.dataset.answer === c.note, null, b.dataset.answer)));
+    else $$('.fret-cell', content).forEach(b => b.addEventListener('click', () => {
+      const picked = F.card(Number(b.dataset.string), Number(b.dataset.fret));
+      answer(picked.id === c.id, picked.id, null);
+    }));
+    $('#hint-button').addEventListener('click', showHint);
+    $('#next-button').addEventListener('click', nextQuestion);
+    if (nameMode || lo === 6) scrollBoard(c);
+  }
+  function scrollBoard(c) {
+    const wrap = $('.board-wrap', content), cell = $(`[data-string="${c.string}"][data-fret="${c.fret}"]`, content);
+    if (wrap && cell && wrap.scrollWidth > wrap.clientWidth) wrap.scrollLeft = Math.max(0, cell.offsetLeft - wrap.clientWidth / 2);
+  }
+  function showHint() {
+    if (!session || session.answered) return;
+    const c = session.queue[session.index], open = F.card(c.string, 0);
+    $('#hint-slot').innerHTML = `<div class="hint-box">这根弦的空弦音是 ${open.note}。每往琴身方向移动一品，升高半音；B–C、E–F 相邻一品。${c.fret === 12 ? '12 品和空弦音名相同，高一个八度。' : c.fret === 0 ? '0 品就是不按任何品位的空弦。' : ''}</div>`;
+    $('#hint-button').disabled = true;
+  }
+  function answer(correct, wrongId, chosenNote) {
+    if (!session || session.answered) return;
+    session.answered = true;
+    const c = session.queue[session.index];
+    F.grade(state, c.id, correct); save(); updateStats();
+    if (correct) session.correct++;
+    else {
+      session.wrongIds.add(c.id);
+      if (!session.retried.has(c.id)) {
+        session.retried.add(c.id);
+        session.queue.splice(Math.min(session.index + 3, session.queue.length), 0, c);
+      }
+    }
+    $('#question-board').innerHTML = board({ target: c, reveal: true, wrong: correct ? null : wrongId });
+    $$('.answer-option', content).forEach(b => {
+      b.disabled = true;
+      if (b.dataset.answer === c.note) b.classList.add('answer-correct');
+      else if (b.dataset.answer === chosenNote) b.classList.add('answer-wrong');
+    });
+    $('#hint-button').classList.add('hidden');
+    const info = $('#answer-instruction'); info.className = `feedback ${correct ? 'good' : 'bad'}`; info.setAttribute('role', 'status');
+    info.innerHTML = `<strong>${correct ? '找对了，记忆又清楚了一点。' : '没关系，再认识它一次。'}</strong>${pos(c)} = ${F.displayNote(c.note)} · ${F.solfege(c.note).label}${!correct ? ' · 稍后再来一次' : ''}`;
+    $('#next-button').classList.remove('hidden');
+    $('#next-button').innerHTML = `${session.index === session.queue.length - 1 ? '看看成果' : '下一题'}<span class="arrow">→</span>`;
+    $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
+    scrollBoard(c); play(c);
+  }
+  function nextQuestion() {
+    if (!session || !session.answered) return;
+    session.index++;
+    if (session.index >= session.queue.length) renderResult(); else renderQuestion();
+  }
+  function renderResult() {
+    if (!session) return;
+    const result = session;
+    state.sessions++; save(); updateStats();
+    $('#exercise-heading').textContent = '练习完成'; $('#session-step').textContent = '每一次回忆，都在积累';
+    const acc = Math.round(result.correct / result.queue.length * 100);
+    const seconds = Math.max(1, Math.round((Date.now() - result.started) / 1000));
+    content.innerHTML = `<div class="result-area"><div class="result-icon">✦</div><div class="eyebrow" style="justify-content:center">A LITTLE BETTER THAN BEFORE</div><h2>今天，又熟悉了一点。</h2><p>${acc >= 80 ? '做得不错。让时间帮你把这些位置记得更牢。' : '不用急，容易混的音，值得多见几次。'}<br>下次到期时，它们会出现在复习里。</p><div class="result-stats"><div><strong>${result.queue.length}</strong><span>完成题数</span></div><div><strong>${acc}%</strong><span>本轮正确率</span></div><div><strong>${seconds >= 60 ? `${Math.floor(seconds / 60)}分${seconds % 60}秒` : `${seconds}秒`}</strong><span>练习用时</span></div></div><div class="result-actions"><button id="again-button" class="primary-button">再练一轮<span class="arrow">→</span></button><button id="result-map-button" class="secondary-button">看看指板地图</button></div>${result.wrongIds.size ? `<div class="mistake-summary">这些位置还可以多见几次：<br>${[...result.wrongIds].map(id => { const c = F.ALL.find(x => x.id === id); return `${pos(c)} ${c.note}`; }).join('　/　')}</div>` : '<div class="mistake-summary">本轮全对！过一阵子再回忆，比现在一直重复更有助于检查记忆。</div>'}</div><div class="exercise-bottom"><span class="subtle-hint">${icon('repeat')}按时复习，才能提升长期记忆等级。</span><button id="back-intro" class="text-button">回到练习首页</button></div>`;
+    session = null;
+    $('#again-button').addEventListener('click', () => startSession(false));
+    $('#result-map-button').addEventListener('click', () => switchView('map'));
+    $('#back-intro').addEventListener('click', renderIntro);
+  }
+  function startStudy() {
+    session = null;
+    const cards = lesson().cards;
+    const fresh = cards.filter(c => !state.cards[c.id]);
+    study = { cards: (fresh.length ? fresh : cards).slice(0, 5), index: 0, revealed: false };
+    switchView('practice', false); renderStudy();
+  }
+  function renderStudy() {
+    player.stop();
+    if (!study) return;
+    const c = study.cards[study.index];
+    $('#exercise-heading').textContent = '先认识，再回忆'; $('#session-step').textContent = `${study.index + 1} / ${study.cards.length} 张认识卡`;
+    content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}</div><p class="study-hint">${F.displayNote(c.note)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · ${c.octave} 组<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听音与唱名</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
+    $('#study-exit').addEventListener('click', renderIntro);
+    if (study.revealed) {
+      $('#play-study').addEventListener('click', () => play(c, true));
+      $('#study-next').addEventListener('click', () => {
+        study.index++;
+        if (study.index >= study.cards.length) { const studied = study.cards; study = null; startSession(false, studied); }
+        else { study.revealed = false; renderStudy(); }
+      });
+    } else $('#study-flip').addEventListener('click', () => { study.revealed = true; renderStudy(); play(c); });
+    scrollBoard(c);
+  }
+  function switchView(next, updateHash = true) {
+    player.stop();
+    view = ['practice', 'map', 'progress'].includes(next) ? next : 'practice';
+    $$('.page-view').forEach(el => el.classList.toggle('hidden', el.id !== `${view}-view`));
+    $$('.nav-item').forEach(b => { b.classList.toggle('active', b.dataset.view === view); if (b.dataset.view === view) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current'); });
+    const texts = {
+      practice: ['今日练习', '让每个音，都有位置', '像记单词一样记指板。每天 5 分钟，从陌生到熟悉。'],
+      map: ['指板地图', '给指尖，一张地图', '看见音与音的联系，把零散的位置慢慢串起来。'],
+      progress: ['我的进度', '每一小步，都算数', '记忆需要时间。看看那些正在变熟悉的位置。']
+    };
+    $('#page-label').textContent = texts[view][0];
+    $('#page-title').innerHTML = `${texts[view][1]}<span>。</span>`;
+    $('#page-subtitle').textContent = texts[view][2];
+    if (view === 'map') renderMap(); if (view === 'progress') renderProgress();
+    if (updateHash && location.hash !== `#${view}`) history.replaceState(null, '', `#${view}`);
+    updateStats();
+  }
+  function renderMap() {
+    const root = $('#map-view');
+    const previousScroll = $('.board-wrap', root)?.scrollLeft || 0;
+    root.innerHTML = `<section class="map-card"><div class="map-header"><div><h2>标准调弦 · 0–12 品</h2><p>全部 78 个位置均可点击听音；上方是音名，下方是固定唱名。</p></div><div class="map-controls"><button id="map-sound-toggle" class="secondary-button" aria-pressed="${state.sound}">${state.sound ? '点击发声：开' : '点击发声：关'}</button><select id="note-filter" aria-label="筛选音名"><option value="">显示全部音</option>${F.NOTES.map(n => `<option value="${n}" ${mapNote === n ? 'selected' : ''}>${F.displayNote(n)}</option>`).join('')}</select></div></div>${board({ map: true, filter: mapNote })}<div class="map-detail" id="map-detail">${mapDetail()}</div></section><div class="map-info-grid"><div class="info-tile"><h3>01 / 一品，一个半音</h3><p>向琴身方向移动一品，升高半音。B–C、E–F 之间只差一品，其余相邻自然音之间差两品。</p></div><div class="info-tile"><h3>02 / 12 品，重新出发</h3><p>12 品的音名与空弦相同，高一个八度。后面的音名依次重复；1 弦与 6 弦同品也同名。</p></div><div class="info-tile"><h3>03 / 同音，不只一处</h3><p>同一个音名能出现在多个位置。先记弦和品，再找重复的音，慢慢连接整块指板。</p></div></div>`;
+    $('.board-wrap', root).scrollLeft = previousScroll;
+    $('#map-sound-toggle').addEventListener('click', () => $('#sound-button').click());
+    $('#note-filter').addEventListener('change', e => { mapNote = e.target.value; renderMap(); });
+    $$('.fret-cell', root).forEach(b => b.addEventListener('click', () => {
+      mapSelected = F.card(Number(b.dataset.string), Number(b.dataset.fret));
+      play(mapSelected); renderMap();
+      if (!state.sound) toast('当前声音已关闭，点击地图上方「点击发声：关」即可开启。');
+      const selected = $('.map-selected', root); if (selected) selected.focus({ preventScroll: true });
+    }));
+  }
+  function mapDetail() {
+    if (!mapSelected) return '<strong>♫</strong><p>每个格子都有对应的音，点击任意位置试听。<small>自然音对应 do、re、mi、fa、sol、la、si；升降音会标出变化。</small></p>';
+    const c = mapSelected, p = state.cards[c.id];
+    return `<strong>${F.displayNote(c.note)}</strong><p>${pos(c)} · ${c.note}${c.octave} · <strong class="solfege-label">${F.solfege(c.note).label}</strong><small>${p ? `已答对 ${p.correct} 次 · ${p.box >= 3 ? '已进入长期记忆' : '正在积累记忆'}` : '还没练过这个位置，可以在对应单元中认识它。'} · 参考音约 ${Math.round(440 * 2 ** ((c.midi - 69) / 12))} Hz</small></p><button id="map-listen" class="sound-inline" aria-label="播放音高与唱名">${icon('sound')}试听</button>`;
+  }
+  function renderProgress() {
+    const s = F.stats(state), root = $('#progress-view');
+    let heat = '<span class="heatmap-label">弦 / 品</span>';
+    for (let f = 0; f <= 12; f++) heat += `<span class="heatmap-label">${f}</span>`;
+    for (let st = 1; st <= 6; st++) {
+      heat += `<span class="heatmap-label">${st} 弦</span>`;
+      for (let f = 0; f <= 12; f++) {
+        const c = F.card(st, f), p = state.cards[c.id], level = !p ? 0 : p.box >= 3 ? 3 : p.box >= 2 ? 2 : 1;
+        heat += `<div class="heatmap-cell level${level}" title="${pos(c)} ${c.note} · ${p ? `答对 ${p.correct} 次，答错 ${p.wrong} 次` : '还未练习'}">${c.note}</div>`;
+      }
+    }
+    const days = [];
+    for (let i = 6; i >= 0; i--) { const d = new Date(); d.setDate(d.getDate() - i); days.push({ label: `${d.getMonth() + 1}/${d.getDate()}`, n: state.days[F.localDay(d)] || 0 }); }
+    const max = Math.max(10, ...days.map(d => d.n));
+    root.innerHTML = `<div class="progress-summary"><div><span>累计练习</span><strong>${s.attempts}<small style="font-size:11px;color:#a2ac9b"> 次</small></strong></div><div><span>完成轮次</span><strong>${state.sessions}</strong></div><div><span>累计正确率</span><strong>${s.attempts ? `${s.accuracy}%` : '—'}</strong></div></div><section class="progress-card"><div class="progress-header"><div><h2>你的指板，正在亮起来。</h2><p>已认识 ${s.learned} / 78 个位置 · ${s.mastered} 个已通过至少三轮间隔复习</p></div><button id="progress-practice" class="secondary-button">继续练习 ↗</button></div><div style="overflow:auto"><div class="heatmap-grid">${heat}</div></div><div class="heatmap-legend">未练过<i></i><i></i><i></i><i></i>长期记忆</div>${!s.attempts ? '<div class="empty-progress">从第一个音开始，这张地图就会慢慢有颜色。</div>' : ''}</section><section class="progress-card"><div class="progress-header"><div><h2>最近 7 天</h2><p>每次回忆都算一次练习，包括错题加练。</p></div></div><div class="history-row">${days.map(d => `<div class="history-day"><strong>${d.n} 次</strong><div class="history-bar" style="height:${Math.max(3, d.n / max * 85)}px"></div><span>${d.label}</span></div>`).join('')}</div></section><section class="progress-card"><div class="progress-header"><div><h2>把进步好好留住</h2><p>导出备份，以后可在其他浏览器恢复。</p></div></div><div class="data-actions"><button id="export-button" class="secondary-button">导出学习记录 ↗</button><button id="import-button" class="secondary-button">恢复备份</button><input id="import-file" class="import-input" type="file" accept=".json,application/json" aria-label="选择学习记录备份"><button id="reset-button" class="text-button">清空本机记录</button></div></section>`;
+    $('#progress-practice').addEventListener('click', () => { switchView('practice'); if (!session && !study) renderIntro(); });
+    $('#export-button').addEventListener('click', exportData);
+    $('#import-button').addEventListener('click', () => $('#import-file').click());
+    $('#import-file').addEventListener('change', importData);
+    $('#reset-button').addEventListener('click', () => {
+      if (!confirm('确定清空当前浏览器里的全部学习记录吗？建议先导出备份。')) return;
+      state = F.blankState(); session = null; study = null; save(); updateStats(); renderIntro(); renderProgress(); toast('本机记录已清空，可以重新开始。');
+    });
+  }
+  function exportData() {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob), a = document.createElement('a');
+    a.href = url; a.download = `弦记-学习记录-${F.localDay()}.json`; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000); toast('学习记录已导出，请妥善保存。');
+  }
+  async function importData(e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 1000000) { toast('备份文件过大，请选择弦记导出的 JSON 文件。'); return; }
+    try {
+      const raw = await file.text(), x = JSON.parse(raw);
+      if (x?.version !== 1 || !x.cards || !x.days || Array.isArray(x.cards) || Array.isArray(x.days)) throw new Error('Invalid backup');
+      const restored = F.loadState(raw);
+      if (Object.keys(x.cards).length && !Object.keys(restored.cards).length) throw new Error('Invalid card data');
+      if (!confirm('恢复备份将替换本机现有学习记录，确定继续吗？')) return;
+      state = restored; session = null; study = null; save(); updateStats(); renderIntro(); renderProgress(); toast('备份已恢复，接着练吧。');
+    } catch { toast('无法读取这个备份，请选择弦记导出的完整 JSON 文件。'); }
+  }
+  function showLessons() {
+    $('#lesson-list').innerHTML = F.LESSONS.map((l, i) => `<button class="lesson-choice ${state.lesson === l.id ? 'selected' : ''}" data-lesson="${l.id}"><span>${String(i + 1).padStart(2, '0')}</span><span><strong>${l.title}</strong><small>${l.subtitle} · ${l.cards.length} 个位置</small></span><span class="lesson-tag">${l.tag}</span></button>`).join('');
+    $$('.lesson-choice').forEach(b => b.addEventListener('click', () => {
+      state.lesson = b.dataset.lesson; save(); updateStats(); renderIntro(); $('#lesson-dialog').close(); toast(`已切换到「${lesson().title}」`);
+    }));
+    $('#lesson-dialog').showModal();
+  }
+  $$('.nav-item').forEach(b => b.addEventListener('click', () => switchView(b.dataset.view)));
+  $('.brand').addEventListener('click', e => { e.preventDefault(); switchView('practice'); });
+  $$('.mode-tab').forEach(b => b.addEventListener('click', () => {
+    if (state.mode === b.dataset.mode) return;
+    state.mode = b.dataset.mode; save();
+    if (session) startSession(false); else if (study) { modeUI(); renderStudy(); } else renderIntro();
+  }));
+  $('#lesson-button').addEventListener('click', showLessons);
+  $('#study-button').addEventListener('click', startStudy);
+  $('#review-button').addEventListener('click', () => startSession(true));
+  $('#help-button').addEventListener('click', () => $('#help-dialog').showModal());
+  $('#sound-button').addEventListener('click', () => { state.sound = !state.sound; save(); updateStats(); if (!state.sound) player.stop();
+    else if (view === 'practice' && ((session && !session.answered) || (study && !study.revealed))) toast('声音已开启，将在翻卡或作答后播放。');
+    else play(study?.revealed ? study.cards[study.index] : session?.answered ? session.queue[session.index] : mapSelected || F.card(5, 3)); });
+  $('#solfege-button').addEventListener('click', () => {
+    state.solfege = !state.solfege;
+    if (state.solfege) state.sound = true;
+    else player.stop();
+    save(); updateStats();
+    if (state.solfege) {
+      const current = study?.revealed ? study.cards[study.index] : session?.answered ? session.queue[session.index] : !session && !study ? mapSelected || F.card(5, 3) : null;
+      if (current) play(current);
+      else toast('唱名已开启，将在翻卡或作答后播放。');
+    }
+  });
+  $$('.close-dialog').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
+  $$('dialog').forEach(d => d.addEventListener('click', e => { if (e.target === d) { const r = d.getBoundingClientRect(); if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) d.close(); } }));
+  document.addEventListener('click', e => { if (e.target.closest('#map-listen') && mapSelected) play(mapSelected, true); });
+  document.addEventListener('keydown', e => {
+    if ($('dialog[open]') || ['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+    if (view === 'practice' && e.key === 'Enter' && session?.answered && !e.target.closest('button')) { e.preventDefault(); nextQuestion(); }
+    if (e.target.matches('.fret-cell') && ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+      const s = Number(e.target.dataset.string), f = Number(e.target.dataset.fret);
+      const ns = Math.min(6, Math.max(1, s + (e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0)));
+      const nf = Math.min(12, Math.max(0, f + (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0)));
+      const next = $(`#${view === 'map' ? 'map' : 'practice'}-view [data-string="${ns}"][data-fret="${nf}"]:not(:disabled)`);
+      if (next) { e.preventDefault(); next.focus(); }
+    }
+  });
+  window.addEventListener('hashchange', () => switchView(location.hash.slice(1), false));
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) { updateStats(); if (view === 'progress') renderProgress(); } });
+  setInterval(updateStats, 30000);
+  hydrateIcons(); save(); updateStats(); renderIntro(); switchView(location.hash.slice(1) || 'practice', false);
+})();
+
+
+  </script>
+</body>
+</html>

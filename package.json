@@ -1,0 +1,11 @@
+{
+  "name": "fret-notes",
+  "version": "1.1.1",
+  "private": true,
+  "description": "像记单词一样记住吉他指板：离线认识卡、双向回忆和间隔复习。",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "build": "node build.cjs"
+  },
+  "engines": { "node": ">=18" }
+}
