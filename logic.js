@@ -158,7 +158,8 @@
       today: state.days[localDay(now)] || 0, streak: streak(state, now) };
   }
   function displayNote(note) { return FLATS[note] ? `${note} / ${FLATS[note]}` : note; }
-  return { solfege, NOTES, OPEN, ALL, LESSONS, INTERVALS, NATURAL, card, localDay, blankState, loadState, normalizeActivity, snapshotActivity, restoreActivity, grade, shuffle, makeQueue, streak, stats, displayNote };
+  function displayPitch(c) { return displayNote(c.note).split(' / ').map(n => `${n}${c.octave}`).join(' / '); }
+  return { displayPitch, solfege, NOTES, OPEN, ALL, LESSONS, INTERVALS, NATURAL, card, localDay, blankState, loadState, normalizeActivity, snapshotActivity, restoreActivity, grade, shuffle, makeQueue, streak, stats, displayNote };
 });
 
 

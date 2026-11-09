@@ -1,6 +1,6 @@
 {
   "name": "fret-notes",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": true,
   "description": "像记单词一样记住吉他指板：78 个弦品实录、认识卡、双向回忆、间隔复习与自动存档。",
   "scripts": {

@@ -71,23 +71,23 @@
         let cls = 'fret-cell', label = '', disabled = '', extra = '', syllable = '';
         if (preview) {
           disabled = 'disabled';
-          if (lesson().cards.some(x => x.id === c.id)) { cls += ' known-dot'; label = c.note; }
+          if (lesson().cards.some(x => x.id === c.id)) { cls += ' known-dot'; label = `${c.note}${c.octave}`; }
         } else if (map) {
           cls += ' map-cell';
           if (!F.NATURAL.has(c.note)) cls += ' accidental';
           if (filter && filter !== c.note) { cls += ' out-of-range'; extra = 'style="opacity:.25"'; }
           if (state.cards[c.id]?.box >= 3) cls += ' map-mastered';
           if (mapSelected?.id === c.id) cls += ' map-selected';
-          label = c.note;
+          label = `${c.note}${c.octave}`;
           syllable = `<small class="cell-solfege">${F.solfege(c.note).label.split(' / ')[0].replace(/ /g, '')}</small>`;
         } else {
           if (target && session && state.mode === 'find') {
             const [lo, hi] = range(target);
             if (s !== target.string || f < lo || f > hi) cls += ' out-of-range';
           }
-          if (isTarget && (state.mode === 'name' || study)) { cls += ' focus-dot'; label = reveal ? c.note : '?'; }
-          if (isTarget && reveal) { cls += ' answer-dot'; label = c.note; }
-          if (wrong === c.id) { cls += ' wrong-dot'; label = c.note; }
+          if (isTarget && (state.mode === 'name' || study)) { cls += ' focus-dot'; label = reveal ? `${c.note}${c.octave}` : '?'; }
+          if (isTarget && reveal) { cls += ' answer-dot'; label = `${c.note}${c.octave}`; }
+          if (wrong === c.id) { cls += ' wrong-dot'; label = `${c.note}${c.octave}`; }
           if (study || session?.answered || state.mode === 'name') disabled = 'disabled';
         }
         const aria = `${s} 弦 ${f === 0 ? '空弦' : `${f} 品`}${map ? `，${F.displayNote(c.note)}，${c.note}${c.octave}，${F.solfege(c.note).label}，点击播放` : preview ? `，${F.displayNote(c.note)}` : ''}`;
@@ -158,7 +158,7 @@
     $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
     const [lo, hi] = range(c);
     const nameMode = state.mode === 'name';
-    content.innerHTML = `<div class="session-progress"><i style="width:${session.index / session.queue.length * 100}%"></i></div><div class="question-area"><p class="question-kicker">${nameMode ? '看看标记的位置，它是什么音？' : '找到这个音，轻轻点一下。'}</p>${nameMode ? '<h2 class="note-title">这个位置，叫什么？</h2>' : `<div class="note-display">${c.note}${F.displayNote(c.note).includes('/') ? `<small>/ ${F.displayNote(c.note).split(' / ')[1]}</small>` : ''}</div>`}<p class="question-prompt"><span class="range-chip">${nameMode ? pos(c) : `第 ${c.string} 弦 · ${lo}–${hi} 品`}</span>${nameMode ? '从下方选择音名' : c.string === 6 ? '最粗的那根弦' : c.string === 1 ? '最细的那根弦' : '从细到粗数弦号'}</p></div><div id="question-board">${board({ target: c })}</div>${nameMode ? `<div class="answer-options">${F.NOTES.map(n => `<button class="answer-option" data-answer="${n}" aria-label="${F.displayNote(n)}">${n}${F.displayNote(n).includes('/') ? `<small>${F.displayNote(n).split(' / ')[1]}</small>` : ''}</button>`).join('')}</div>` : ''}<div id="hint-slot"></div><div class="exercise-bottom"><button id="hint-button" class="text-button">给我一个提示</button><span id="answer-instruction" class="subtle-hint">${nameMode ? '先想一想，再选择。' : '点击指板上的位置作答。'}</span><button id="next-button" class="primary-button hidden">下一题<span class="arrow">→</span></button></div>`;
+    content.innerHTML = `<div class="session-progress"><i style="width:${session.index / session.queue.length * 100}%"></i></div><div class="question-area"><p class="question-kicker">${nameMode ? '看看标记的位置，它是什么音？' : '找到这个音；音名后的数字表示八度。'}</p>${nameMode ? '<h2 class="note-title">这个位置，叫什么？</h2>' : `<div class="note-display">${c.note}${c.octave}${F.displayNote(c.note).includes('/') ? `<small>/ ${F.displayNote(c.note).split(' / ')[1]}${c.octave}</small>` : ''}</div>`}<p class="question-prompt"><span class="range-chip">${nameMode ? pos(c) : `第 ${c.string} 弦 · ${lo}–${hi} 品`}</span>${nameMode ? '从下方选择音名' : c.string === 6 ? '最粗的那根弦' : c.string === 1 ? '最细的那根弦' : '从细到粗数弦号'}</p></div><div id="question-board">${board({ target: c })}</div>${nameMode ? `<div class="answer-options">${F.NOTES.map(n => `<button class="answer-option" data-answer="${n}" aria-label="${F.displayNote(n)}">${n}${F.displayNote(n).includes('/') ? `<small>${F.displayNote(n).split(' / ')[1]}</small>` : ''}</button>`).join('')}</div>` : ''}<div id="hint-slot"></div><div class="exercise-bottom"><button id="hint-button" class="text-button">给我一个提示</button><span id="answer-instruction" class="subtle-hint">${nameMode ? '先想一想，再选择。' : '点击指板上的位置作答。'}</span><button id="next-button" class="primary-button hidden">下一题<span class="arrow">→</span></button></div>`;
     if (nameMode) $$('.answer-option', content).forEach(b => b.addEventListener('click', () => answer(b.dataset.answer === c.note, null, b.dataset.answer)));
     else $$('.fret-cell', content).forEach(b => b.addEventListener('click', () => {
       const picked = F.card(Number(b.dataset.string), Number(b.dataset.fret));
@@ -176,7 +176,7 @@
   function showHint() {
     if (!session || session.answered) return;
     const c = session.queue[session.index], open = F.card(c.string, 0);
-    $('#hint-slot').innerHTML = `<div class="hint-box">这根弦的空弦音是 ${open.note}。每往琴身方向移动一品，升高半音；B–C、E–F 相邻一品。${c.fret === 12 ? '12 品和空弦音名相同，高一个八度。' : c.fret === 0 ? '0 品就是不按任何品位的空弦。' : ''}</div>`;
+    $('#hint-slot').innerHTML = `<div class="hint-box">这根弦的空弦音是 ${open.note}${open.octave}。每往琴身方向移动一品，升高半音；B–C、E–F 相邻一品。${c.fret === 12 ? '12 品和空弦音名相同，高一个八度。' : c.fret === 0 ? '0 品就是不按任何品位的空弦。' : ''}</div>`;
     $('#hint-button').disabled = true;
   }
   function answer(correct, wrongId, chosenNote) {
@@ -205,7 +205,7 @@
     });
     $('#hint-button').classList.add('hidden');
     const info = $('#answer-instruction'); info.className = `feedback ${correct ? 'good' : 'bad'}`; info.setAttribute('role', 'status');
-    info.innerHTML = `<strong>${correct ? '找对了，记忆又清楚了一点。' : '没关系，再认识它一次。'}</strong>${pos(c)} = ${F.displayNote(c.note)} · ${F.solfege(c.note).label}${!correct ? ' · 稍后再来一次' : ''}`;
+    info.innerHTML = `<strong>${correct ? '找对了，记忆又清楚了一点。' : '没关系，再认识它一次。'}</strong>${pos(c)} = ${F.displayPitch(c)} · ${F.solfege(c.note).label}${!correct ? ' · 稍后再来一次' : ''}`;
     $('#next-button').classList.remove('hidden');
     $('#next-button').innerHTML = `${session.index === session.queue.length - 1 ? '看看成果' : '下一题'}<span class="arrow">→</span>`;
     $('#session-step').textContent = `${session.index + 1} / ${session.queue.length}${session.queue.length > session.originalLength ? ' · 含错题加练' : ''}`;
@@ -241,7 +241,7 @@
     save();
     const c = study.cards[study.index];
     $('#exercise-heading').textContent = '先认识，再回忆'; $('#session-step').textContent = `${study.index + 1} / ${study.cards.length} 张认识卡`;
-    content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}</div><p class="study-hint">${F.displayNote(c.note)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · ${c.octave} 组<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听吉他音</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
+    content.innerHTML = `<div class="question-area"><span class="study-tag">认识卡 · ${pos(c)}</span><p class="question-kicker">${study.revealed ? '把音名、位置和声音连在一起。' : '先看看位置，再翻开答案。'}</p>${study.revealed ? `<div class="note-display">${c.note}${c.octave}</div><p class="study-hint">${F.displayPitch(c)} · <strong class="solfege-label">${F.solfege(c.note).label}</strong> · 数字表示八度<br>${c.fret === 0 ? '空弦：不用按品，直接拨响这根弦。' : c.fret === 12 ? '12 品与同弦空弦音名相同，高一个八度。' : `从空弦 ${F.card(c.string, 0).note} 出发，向琴身方向移动 ${c.fret} 品。`}</p>` : '<div class="study-placeholder">?</div><p class="study-hint">试着猜一猜，不会也没有关系。</p>'}</div>${board({ target: c, reveal: study.revealed })}<div class="exercise-bottom"><button id="study-exit" class="text-button">回到练习</button>${study.revealed ? `<button id="play-study" class="sound-inline">${icon('sound')}听吉他音</button><button id="study-next" class="primary-button">${study.index + 1 === study.cards.length ? '开始回忆' : '下一个位置'}<span class="arrow">→</span></button>` : '<button id="study-flip" class="primary-button">翻开音名<span class="arrow">↗</span></button>'}</div>`;
     $('#study-exit').addEventListener('click', renderIntro);
     if (study.revealed) {
       $('#play-study').addEventListener('click', () => play(c, true));
@@ -273,7 +273,7 @@
   function renderMap() {
     const root = $('#map-view');
     const previousScroll = $('.board-wrap', root)?.scrollLeft || 0;
-    root.innerHTML = `<section class="map-card"><div class="map-header"><div><h2>标准调弦 · 0–12 品</h2><p>78 个位置各有独立吉他录音；上方是音名，下方是固定唱名文字。</p></div><div class="map-controls"><button id="map-sound-toggle" class="secondary-button" aria-pressed="${state.sound}">${state.sound ? '点击发声：开' : '点击发声：关'}</button><select id="note-filter" aria-label="筛选音名"><option value="">显示全部音</option>${F.NOTES.map(n => `<option value="${n}" ${mapNote === n ? 'selected' : ''}>${F.displayNote(n)}</option>`).join('')}</select></div></div>${board({ map: true, filter: mapNote })}<div class="map-detail" id="map-detail">${mapDetail()}</div></section><div class="map-info-grid"><div class="info-tile"><h3>01 / 一品，一个半音</h3><p>向琴身方向移动一品，升高半音。B–C、E–F 之间只差一品，其余相邻自然音之间差两品。</p></div><div class="info-tile"><h3>02 / 12 品，重新出发</h3><p>12 品的音名与空弦相同，高一个八度。后面的音名依次重复；1 弦与 6 弦同品也同名。</p></div><div class="info-tile"><h3>03 / 同音，不只一处</h3><p>同一个音名能出现在多个位置。先记弦和品，再找重复的音，慢慢连接整块指板。</p></div></div>`;
+    root.innerHTML = `<section class="map-card"><div class="map-header"><div><h2>标准调弦 · 0–12 品</h2><p>上方显示音名与八度编号（如 E2、E3），下方是固定唱名；点击试听对应位置的吉他实录。</p></div><div class="map-controls"><button id="map-sound-toggle" class="secondary-button" aria-pressed="${state.sound}">${state.sound ? '点击发声：开' : '点击发声：关'}</button><select id="note-filter" aria-label="筛选音名"><option value="">显示全部音</option>${F.NOTES.map(n => `<option value="${n}" ${mapNote === n ? 'selected' : ''}>${F.displayNote(n)}</option>`).join('')}</select></div></div>${board({ map: true, filter: mapNote })}<div class="map-detail" id="map-detail">${mapDetail()}</div></section><div class="map-info-grid"><div class="info-tile"><h3>01 / 一品，一个半音</h3><p>向琴身方向移动一品，升高半音。B–C、E–F 之间只差一品，其余相邻自然音之间差两品。</p></div><div class="info-tile"><h3>02 / 12 品，重新出发</h3><p>6 弦空弦是 E2，12 品是 E3：同名，高一个八度。数字越大，音越高；1 弦与 6 弦同品相差两个八度。</p></div><div class="info-tile"><h3>03 / 同音，不只一处</h3><p>同名不一定同高，如 E2 与 E3。同一个音高也能出现在不同弦上，如 6 弦 5 品与 5 弦空弦都是 A2；弦号和品位确定具体位置。</p></div></div>`;
     $('.board-wrap', root).scrollLeft = previousScroll;
     $('#map-sound-toggle').addEventListener('click', () => $('#sound-button').click());
     $('#note-filter').addEventListener('change', e => { mapNote = e.target.value; renderMap(); });
@@ -287,7 +287,7 @@
   function mapDetail() {
     if (!mapSelected) return '<strong>♫</strong><p>每个格子都有对应弦品的吉他录音，点击任意位置试听。<small>自然音对应 do、re、mi、fa、sol、la、si；升降音会标出变化。</small></p>';
     const c = mapSelected, p = state.cards[c.id];
-    return `<strong>${F.displayNote(c.note)}</strong><p>${pos(c)} · ${c.note}${c.octave} · <strong class="solfege-label">${F.solfege(c.note).label}</strong><small>${p ? `已答对 ${p.correct} 次 · ${p.box >= 3 ? '已进入长期记忆' : '正在积累记忆'}` : '还没练过这个位置，可以在对应单元中认识它。'} · 参考音约 ${Math.round(440 * 2 ** ((c.midi - 69) / 12))} Hz</small></p><button id="map-listen" class="sound-inline" aria-label="播放这个弦品位置的吉他录音">${icon('sound')}试听</button>`;
+    return `<strong>${F.displayPitch(c)}</strong><p>${pos(c)} · ${c.note}${c.octave} · <strong class="solfege-label">${F.solfege(c.note).label}</strong><small>${p ? `已答对 ${p.correct} 次 · ${p.box >= 3 ? '已进入长期记忆' : '正在积累记忆'}` : '还没练过这个位置，可以在对应单元中认识它。'} · 参考音约 ${Math.round(440 * 2 ** ((c.midi - 69) / 12))} Hz</small></p><button id="map-listen" class="sound-inline" aria-label="播放这个弦品位置的吉他录音">${icon('sound')}试听</button>`;
   }
   function renderProgress() {
     const s = F.stats(state), root = $('#progress-view');

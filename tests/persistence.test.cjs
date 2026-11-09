@@ -87,3 +87,33 @@ test('backups round-trip active cards using canonical tuning and reject corrupt 
   delete raw.activity; delete raw.savedAt;
   assert.equal(F.loadState(JSON.stringify(raw)).activity, null);
 });
+
+test('find questions distinguish the open E2 from E3 at fret 12 and preserve the range', () => {
+  for (const [fret, pitch, range] of [[0, 'E2', '0–5'], [12, 'E3', '6–12']]) {
+    const x = launch();
+    x.app.startSession(false, [F.card(6, fret)]);
+    const html = x.nodes.get('#exercise-content').innerHTML;
+    assert.ok(html.includes(`<div class="note-display">${pitch}</div>`));
+    assert.ok(html.includes(`第 6 弦 · ${range} 品`));
+    x.app.answer(true, null, null);
+    assert.ok(x.nodes.get('#answer-instruction').innerHTML.includes(`= ${pitch}`));
+    assert.ok(x.nodes.get('#question-board').innerHTML.includes(`<span class="note-dot">${pitch}</span>`));
+  }
+});
+test('name questions hide pitch until answered and retain twelve pitch-class choices', () => {
+  const x = launch(); x.app.state.mode = 'name';
+  x.app.startSession(false, [F.card(6, 12)]);
+  const html = x.nodes.get('#exercise-content').innerHTML;
+  assert.ok(html.includes('<span class="note-dot">?</span>'));
+  assert.ok(!html.includes('E3'));
+  assert.equal([...html.matchAll(/class="answer-option"/g)].length, 12);
+  x.app.answer(true, null, 'E');
+  assert.ok(x.nodes.get('#answer-instruction').innerHTML.includes('E3'));
+});
+test('complete pitch spelling preserves enharmonic octave numbers and the B to C boundary', () => {
+  assert.equal(F.displayPitch(F.card(6, 0)), 'E2');
+  assert.equal(F.displayPitch(F.card(6, 12)), 'E3');
+  assert.equal(F.displayPitch(F.card(2, 2)), 'C♯4 / D♭4');
+  assert.equal(F.displayPitch(F.card(5, 2)), 'B2');
+  assert.equal(F.displayPitch(F.card(5, 3)), 'C3');
+});
